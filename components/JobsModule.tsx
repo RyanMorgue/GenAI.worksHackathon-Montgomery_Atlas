@@ -98,7 +98,8 @@ export default function JobsModule() {
                                 <div className="flex flex-row md:flex-col items-center md:items-end justify-between gap-2">
                                     <SourceBadge source={job.source} />
                                     <p className="text-xs text-slate-400">
-                                        Expires in {Math.round((job.expiresAt - Date.now()) / 86400000)} days
+                                        {/* eslint-disable-next-line react-hooks/exhaustive-deps */}
+                                        Expires in {Math.round((job.expiresAt - new Date().getTime()) / 86400000)} days
                                     </p>
                                 </div>
                             </div>

@@ -1,86 +1,39 @@
 # System Architecture
 
-## Architecture Overview
-The AI CITY COPILOT is designed as a modular, scalable, full-stack application. It leverages Next.js for the presentation layer, powered by a custom Node.js/Express backend that orchestrates external API calls to Montgomery Open Data, Bright Data, and LLM inference providers.
+## Overview
+AI City Copilot is a Next.js 15 (App Router) based dashboard designed to run autonomously with high resilience. It combines client-side interactive routing, server-rendered components, and Next.js Edge proxy servers for seamless backend integrations.
 
-## High-Level Diagram
+## Core Stack
+- **Framework**: Next.js 15
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4, Lucide React (Iconography)
+- **Map System**: Leaflet / React-Leaflet
+- **Data Visualization**: Recharts
+- **Deployment**: Vercel
 
+## System Diagram
 ```mermaid
-graph TD
-    Client[Client Browser/Mobile]
-    NextJS[Next.js Frontend]
-    Express[Express.js Backend API]
-    
-    SubGraph_ExternalAPIs[External APIs & Services]
-        LLM[LLM API Engine]
-        SODA[Montgomery Open Data]
-        BrightData[Bright Data Scraper]
-        TTS[Text-to-Speech Engine]
-    end
-    
-    Client -- HTTP/WebSocket --> NextJS
-    NextJS -- Internal Fetch --> Express
-    Express -- Prompting --> LLM
-    Express -- REST --> SODA
-    Express -- Proxy Scrape --> BrightData
-    Express -- Generate --> TTS
+graph TD;
+    A[Client Browser] -->|Next.js Router| B(UI Components)
+    B --> C{Dashboard Modules}
+    C --> D[Business Discovery]
+    C --> E[Finance Dashboard]
+    C --> F[Crime Router]
+    C --> G[History Module]
+    B --> H[AI Copilot]
+    H -->|Proxy Route| I(Next.js API Edge)
+    I -->|Fetch| J[External LLM]
+    D -->|Data| K[Client State Map]
 ```
 
-## Component Breakdown
+## Module Breakdown
 
-### Frontend Layer (Next.js + TailwindCSS)
-- **Framework:** Next.js React Framework using the App Router (`/app`).
-- **Styling:** TailwindCSS for utility-first styling.
-- **Maps:** Leaflet or Mapbox GL JS for interactive map rendering, marker management, and path routing.
-- **Components:** Modular React components broken down by feature (`/components/map`, `/components/chat`, `/components/dashboard`).
+1. **Dashboard Home (/app/page.tsx)**: Integrates the AI Copilot hero unit, Finance Dashboard, and the Local Discovery grid.
+2. **AI Copilot (services/aiCopilotService.ts)**: Handles contextual queries routed through `/api/chat` to protect keys. Implements Web Speech API for voice interactions.
+3. **Map System (components/Map.tsx)**: Lazy-loaded Leaflet mapping bypassing SSR constraints. Uses a customized dark Carto tile layer for the huly.io aesthetic.
+4. **Data Integrations**: Mocks Bright Data and SODA endpoints for resilient hackathon demonstrations. Data structures are deterministic.
 
-### Backend Layer (Node.js + Express)
-The backend acts as a secure proxy and business logic executor. 
-- **API Routes (`/api`):** Exposes clean endpoints for the frontend to consume (e.g., `/api/crime`, `/api/plan-day`, `/api/businesses`).
-- **Services (`/services`):** Encapsulates the core business logic, formatting, and external API orchestration.
-- **Scrapers (`/scrapers`):** Contains Bright Data configuration and batching logic for business discovery.
-
-### Secondary Modules
-- **AI Copilot Engine:** Processes conversational input, extracts intent (e.g., "planning" vs "querying data"), and generates structured JSON itineraries.
-- **Open Finance & Crime:** Fetches and standardizes SODA responses into application-specific interfaces.
-- **Security Middleware (`/security`):** Inspects incoming payload strings for malicious commands or known injection vectors before hitting the LLM.
-
-## Architecture Decisions & Rationale
-1. **Express + Next.js:** While Next.js App Router has built-in Route Handlers, using a dedicated Express backend layer provides finer control over WebSockets (if needed), advanced rate-limiting, and separation of concerns for the heavily-tasked web scraping workers.
-2. **No Tracking/Analytics:** Strictly adheres to the project requirement. No client-side SDKs will be implemented. All internal logging will be handled via a custom minimal `console.log` wrapping utility on the Express server.
-3. **Stateless AI:** Conversation history is maintained on the client-side (sessionStorage/React state) to minimize server database requirements and keep operational costs low.
-4. **Proxy Scraping:** Bright Data calls are strictly routed through the Express backend to protect credentials and handle batching.
-
-## Data Models (Internal Interfaces)
-
-**Location Object:**
-```typescript
-interface LocationPOI {
-    id: string;
-    name: string;
-    category: string;
-    lat: number;
-    lng: number;
-    hours?: string;
-    isOpen?: boolean;
-    priceRange?: '$' | '$$' | '$$$';
-    dataSource: 'montgomery' | 'brightdata' | 'wiki';
-}
-```
-
-**Itinerary Object:**
-```typescript
-interface DayItinerary {
-    id: string;
-    promptText: string;
-    stops: {
-        timeBlock: 'Morning' | 'Lunch' | 'Afternoon' | 'Evening';
-        location: LocationPOI;
-        description: string;
-    }[];
-}
-```
-
-## Scalability and Maintainability
-- The scraper tasks are designed to be run asynchronously and can easily be moved to an external cron service.
-- The repository structure maps 1:1 with the requested folder hierarchy, ensuring clean separation between security, services, maps, and UI.
+## Security Constraints
+- All backend calls are proxied through route handlers (`proxy.ts` / API directories) to obscure API keys.
+- Rate limiting is structurally supported via Vercel Edge rules.
+- `noindex` headers dictate the app should remain unindexed.

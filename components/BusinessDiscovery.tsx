@@ -9,6 +9,7 @@ type Category = 'restaurants' | 'cafes' | 'malls' | 'salons' | 'manicure salons'
 // Generate 10+ deterministic items per category
 const generatePOIs = () => {
     const categories: Category[] = ['restaurants', 'cafes', 'malls', 'salons', 'manicure salons', 'spas', 'gyms', 'yoga studios', 'pilates studios'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pois: any[] = [];
     const baseLat = 32.3792;
     const baseLng = -86.3077;

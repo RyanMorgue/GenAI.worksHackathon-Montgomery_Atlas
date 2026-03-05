@@ -1,61 +1,28 @@
 # AI CITY COPILOT — Montgomery Smart City Dashboard
 
-![Montgomery OS](https://img.shields.io/badge/Status-MVP_Live-success)
-![Next.js](https://img.shields.io/badge/Framework-Next.js_16-blue)
-![Architecture](https://img.shields.io/badge/Architecture-MERN+LLM-indigo)
-![Analytics](https://img.shields.io/badge/Analytics-Zero_Tracking-green)
+## Introduction
+The AI City Copilot is a dark-modern workspace dashboard providing an intuitive lens into civic analytics, local economics, history, and administration for Montgomery, Alabama. This application serves as a hackathon submission combining autonomous GenAI agent design principles, dynamic Next.js edge routing, and responsive glass UI principles mapped from top-tier cinematic experiences.
 
-An AI-powered civic intelligence platform focused on the city of Montgomery, Alabama. This platform serves as a digital intelligence layer for residents and tourists, providing everything from live transport discovery to open finance transparency.
+## Project Structure
+This application is self-contained. For detailed internal specifications, please review the `docs/` folder:
+- [System Architecture](docs/architecture.md)
+- [Feature Details](docs/features.md)
+- [Deployment Guide](docs/deployment.md)
 
-## 🚀 Features
+## Core Capabilities
+1. **Interactive AI Copilot**: Native browser voice API coupled with LLM query pipelines (protected via Edge proxy) for true civic engagement.
+2. **Local Business Matrix**: Determinsitic integration rendering a Carto Dark map with 10+ locations per UI category.
+3. **Historic Curations**: Text-to-speech enabled localized history player utilizing Wikipedia content arrays.
+4. **Transport & Job Boards**: Highly paginated and modular Next.js routes ensuring scale capabilities without frontend degradation.
 
-* **AI Smart Day Planner:** Type "Plan my perfect day in Montgomery" and receive a heavily structured, contextual itinerary across the city.
-* **Live Food & Lifestyle Discovery:** Integrates Bright Data scaffolding for real-time gym, cafe, and restaurant availability.
-* **Interactive Civic Map:** Live mapping of business discovery and crime heatmaps.
-* **Montgomery Open Data Connections:** Public safety and open finance (SODA architecture compliant) data visualizations using Recharts.
-* **Zero Tracking Policy:** No Google Analytics, no PostHog, no Segment. 100% telemetry-free for citizen privacy.
+## Tech Stack
+- Frontend: Next.js 15 (App Router), React 19, TailwindCSS v4, Framer Motion
+- UI Icons & Art: Lucide React, Custom Dark Fantasy Generation
+- Backend Route logic: Next Edge / Express Runtime
 
-## 🛠️ Tech Stack
+## Deployment
+Automatically deployed to Vercel via Github branch mapping on `main`.
 
-* **Frontend:** Next.js (App Router), React 19, TailwindCSS v4, Recharts, Leaflet.
-* **Backend:** Node.js, Express (via custom `server.ts` proxy), Next.js Edge APIs (`proxy.ts`).
-* **Security:** Helmet, rate-limiting, and LLM Prompt Injection middleware.
+Check out the live link: [https://genai-works-hackathon-montgomery-atlas.vercel.app](https://genai-works-hackathon-montgomery-atlas.vercel.app)
 
-## 🗂️ Project Architecture
-
-```text
-/ai-city-copilot
-  ├── /app            # Next.js Application Route Handlers and UI
-  ├── /components     # Modular React specific UI Components
-  ├── /scrapers       # Bright Data Stub/Integration adapters
-  ├── /services       # Core API adapters (Montgomery SODA, LLM)
-  ├── /docs           # PRD and Architecture documents
-  ├── proxy.ts        # Edge security middleware and rate limiting
-  └── server.ts       # Express custom server configuration
-```
-
-## 🔐 Security Standards
-
-The `/api` and `/api/chat` layers are protected by a proxy interceptor that:
-1. Validates prompt sanitization (`ignore previous instructions`, `dump database`).
-2. Applies strict rate limits (20 requests per minute).
-3. Blocks indexing bots.
-
-## 📦 Local Development
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Start the development server (runs Express concurrently with Next.js router):
-   ```bash
-   npm run dev
-   ```
-3. Open [http://localhost:3000](http://localhost:3000)
-
-## 📄 Documentation
-
-Read the complete Product Requirements Document in `docs/PRD.md` for user stories and system logic.
-
----
-*Built autonomously via Agentic Pipeline.*
+*(Autonomously planned, audited, built, and deployed by Antigravity Agent.)*

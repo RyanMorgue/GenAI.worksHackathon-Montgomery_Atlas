@@ -23,12 +23,14 @@ export default function Home() {
         recognition.interimResults = false;
         recognition.lang = 'en-US';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         recognition.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
           setQuery(prev => prev + ' ' + transcript);
           setIsListening(false);
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         recognition.onerror = (event: any) => {
           console.error(event.error);
           setIsListening(false);
@@ -102,7 +104,7 @@ export default function Home() {
           <p className="text-zinc-300 text-lg md:text-xl mb-8 font-medium drop-shadow-md">
             Ask me anything about Montgomery. Try typing: <br />
             <button onClick={() => setQuery("Plan my perfect day in Montgomery")} className="inline-block mt-3 bg-white/5 hover:bg-white/10 transition-colors px-4 py-2 rounded-lg border border-white/10 italic font-mono text-sm rgb-hover-glow cursor-pointer text-indigo-200">
-              "Plan my perfect day in Montgomery"
+              &quot;Plan my perfect day in Montgomery&quot;
             </button>
           </p>
 
