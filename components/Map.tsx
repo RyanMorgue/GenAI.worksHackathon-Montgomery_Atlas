@@ -49,10 +49,10 @@ export default function SmartCityMap({ pois, centerLat = 32.3792, centerLng = -8
         });
     }, []);
 
-    if (!isMounted) return <div className="h-64 w-full bg-slate-100 animate-pulse rounded-lg">Loading Map...</div>;
+    if (!isMounted) return <div className="h-96 w-full bg-[#111113] animate-pulse rounded-2xl border border-white/5 flex items-center justify-center">Loading Map...</div>;
 
     return (
-        <div style={{ height: '400px', width: '100%', borderRadius: '12px', overflow: 'hidden' }} className="shadow-lg border border-slate-200">
+        <div style={{ height: '500px', width: '100%', borderRadius: '16px', overflow: 'hidden' }} className="shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 relative z-0">
             {/* The MapContainer component must be rendered client-side only */}
             <MapContainer
                 center={[centerLat, centerLng]}
@@ -61,22 +61,22 @@ export default function SmartCityMap({ pois, centerLat = 32.3792, centerLng = -8
                 scrollWheelZoom={true}
             >
                 <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
 
                 {pois.map(poi => (
                     <Marker key={poi.id} position={[poi.lat, poi.lng]}>
                         <Popup>
-                            <div className="p-2 min-w-[150px]">
-                                <h3 className="font-bold text-lg">{poi.name}</h3>
-                                <p className="text-sm text-slate-500 capitalize">{poi.type}</p>
+                            <div className="p-2 min-w-[150px] bg-[#111113] text-white">
+                                <h3 className="font-bold text-lg text-indigo-400">{poi.name}</h3>
+                                <p className="text-sm text-zinc-400 capitalize">{poi.type}</p>
 
-                                <div className="mt-2 text-sm grid grid-cols-2 gap-1 text-slate-700">
-                                    {poi.distance && <span>📍 {poi.distance} miles</span>}
-                                    {poi.priceRange && <span>💰 {poi.priceRange}</span>}
+                                <div className="mt-3 text-sm flex flex-col gap-2 text-zinc-300">
+                                    {poi.distance && <span className="flex items-center gap-2">📍 {poi.distance} miles</span>}
+                                    {poi.priceRange && <span className="flex items-center gap-2">💰 {poi.priceRange}</span>}
                                     {poi.openingStatus && (
-                                        <span className={`font-semibold ${poi.openingStatus === 'Open' ? 'text-green-600' : 'text-slate-600'}`}>
+                                        <span className={`font-bold px-2 py-1 rounded-md text-center max-w-fit ${poi.openingStatus === 'Open' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
                                             ⏱ {poi.openingStatus}
                                         </span>
                                     )}

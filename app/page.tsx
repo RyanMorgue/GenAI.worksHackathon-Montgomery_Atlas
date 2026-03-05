@@ -1,64 +1,161 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
-import TransportSystem from '@/components/TransportSystem';
-import CrimeDashboard from '@/components/CrimeDashboard';
 import FinanceDashboard from '@/components/FinanceDashboard';
-import JobsModule from '@/components/JobsModule';
+import { Mic, Send, Bot } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
+  const [query, setQuery] = useState('');
+  const [chatLog, setChatLog] = useState<{ role: 'user' | 'copilot', text: string }[]>([]);
+  const [isListening, setIsListening] = useState(false);
+
+  // Custom Hook or ref for Speech Recognition
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setQuery(prev => prev + ' ' + transcript);
+          setIsListening(false);
+        };
+
+        recognition.onerror = (event: any) => {
+          console.error(event.error);
+          setIsListening(false);
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+      }
+    }
+  }, []);
+
+  const handleMicClick = () => {
+    if (!recognitionRef.current) {
+      alert("Speech recognition isn't supported in this browser.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const handleAsk = () => {
+    if (!query.trim()) return;
+
+    setChatLog(prev => [...prev, { role: 'user', text: query }]);
+    const currentQuery = query;
+    setQuery('');
+
+    // Stub AI response since backend LLM might be missing keys
+    setTimeout(() => {
+      let reply = "Here is some information regarding Montgomery. Based on your request, I recommend checking the discovery module below.";
+      if (currentQuery.toLowerCase().includes('perfect day')) {
+        reply = "Here is your perfect day in Montgomery: \nMorning: Coffee at Prevail Union.\nAfternoon: Visit the Legacy Museum and grab lunch at Chris' Hot Dogs.\nEvening: Walk along the Riverfront and dine at Central.";
+      }
+      setChatLog(prev => [...prev, { role: 'copilot', text: reply }]);
+    }, 1000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAsk();
+    }
+  };
+
   return (
-    <>
-      {/* AI Copilot Hero Section */}
-      <section id="copilot" className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden h-[400px] flex flex-col justify-center">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 MixBlendMode-overlay"></div>
-        <div className="relative z-10 max-w-2xl">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Meet your City Copilot.
-          </h2>
-          <p className="text-blue-100 text-lg md:text-xl mb-8 font-medium">
+    <div className="space-y-12 animate-in fade-in duration-700">
+
+      {/* AI Copilot Hero Section - Huly/Riot Games Aesthetic */}
+      <section id="copilot" className="rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden min-h-[500px] flex flex-col justify-end border border-white/10 glass-panel">
+        {/* Animated Background Layers */}
+        <div className="absolute inset-0 z-0 bg-[#050510]"></div>
+        <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen bg-center bg-cover animate-slow-pan" style={{ backgroundImage: "url('/bg-skyline.png')" }}></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#0a0a0b] via-transparent to-transparent opacity-80"></div>
+
+        <div className="relative z-10 max-w-3xl">
+          <div className="flex items-center gap-3 mb-4">
+            <Bot className="text-indigo-400 w-8 h-8 filter drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">
+              Meet your City Copilot.
+            </h2>
+          </div>
+          <p className="text-zinc-300 text-lg md:text-xl mb-8 font-medium drop-shadow-md">
             Ask me anything about Montgomery. Try typing: <br />
-            <span className="inline-block mt-3 bg-white/10 px-4 py-2 rounded-lg border border-white/20 italic font-mono text-sm">
+            <button onClick={() => setQuery("Plan my perfect day in Montgomery")} className="inline-block mt-3 bg-white/5 hover:bg-white/10 transition-colors px-4 py-2 rounded-lg border border-white/10 italic font-mono text-sm rgb-hover-glow cursor-pointer text-indigo-200">
               "Plan my perfect day in Montgomery"
-            </span>
+            </button>
           </p>
 
-          <div className="relative max-w-xl group">
-            <input
-              type="text"
-              placeholder="Ask your civic assistant..."
-              className="w-full bg-white/10 border border-white/20 rounded-full py-4 pl-6 pr-32 text-white placeholder:text-blue-200 focus:outline-none focus:bg-white/20 transition-all shadow-inner backdrop-blur-md"
-              readOnly // MVP constraint: We don't have the LLM api key, just showing the UI shell
-            />
-            <button className="absolute right-2 top-2 bottom-2 bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 rounded-full transition-colors shadow-lg shadow-blue-500/30">
-              Ask
+          {/* Chat History */}
+          {chatLog.length > 0 && (
+            <div className="mb-6 max-h-[200px] overflow-y-auto space-y-4 pr-4 custom-scrollbar">
+              {chatLog.map((log, i) => (
+                <div key={i} className={`flex ${log.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`px-4 py-3 rounded-2xl max-w-[80%] ${log.role === 'user' ? 'bg-indigo-600/80 text-white' : 'glass-panel text-zinc-200'}`}>
+                    {log.text.split('\n').map((line, j) => <p key={j} className="mb-1">{line}</p>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Interactive Input Layer */}
+          <div className="relative max-w-2xl group flex items-center gap-2">
+            <div className="relative flex-1 rgb-hover-glow rounded-full">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask your civic assistant..."
+                className="w-full bg-[#111113]/80 border border-white/10 rounded-full py-4 pl-6 pr-16 text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/50 transition-all shadow-inner backdrop-blur-md"
+              />
+              <button
+                onClick={handleMicClick}
+                className={`absolute right-3 top-[10px] p-2 rounded-full transition-colors ${isListening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
+                title="Voice Input"
+              >
+                <Mic size={20} />
+              </button>
+            </div>
+
+            <button onClick={handleAsk} className="rgb-hover-glow bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0">
+              <Send size={24} />
             </button>
           </div>
         </div>
       </section>
 
-      {/* Primary Discovery Grid */}
-      <div id="discovery" className="grid lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8">
-          <BusinessDiscovery />
-        </div>
-        <div className="lg:col-span-4 h-full">
-          <CrimeDashboard />
-        </div>
-      </div>
-
-      {/* Transport & Jobs */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        <div id="transit">
-          <TransportSystem />
-        </div>
-        <div>
-          <JobsModule />
-        </div>
-      </div>
-
-      {/* Finance Transparency */}
-      <div id="finance">
+      {/* Finance Directly Below Copilot */}
+      <div id="finance" className="animate-in slide-in-from-bottom-8 duration-1000 delay-100">
         <FinanceDashboard />
       </div>
-    </>
+
+      {/* Primary Discovery Grid */}
+      <div id="discovery" className="animate-in slide-in-from-bottom-8 duration-1000 delay-200">
+        <BusinessDiscovery />
+      </div>
+
+    </div>
   );
 }
