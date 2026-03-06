@@ -5,6 +5,7 @@ import './globals.css';
 import { useState } from 'react';
 import { Menu, X, Navigation, Briefcase, ShieldAlert, BookOpen, HeartPulse, HardHat, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
+import CityNavMenu from '@/components/CityNavMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -38,10 +39,15 @@ export default function RootLayout({
               <Link href="/crime" className="text-sm font-medium text-zinc-400 px-4 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Live Safety</Link>
             </nav>
 
-            {/* Hamburger Menu Toggle */}
+            {/* Hamburger Menu Toggle - Desktop */}
+            <div className="hidden lg:block">
+              <CityNavMenu />
+            </div>
+
+            {/* Hamburger Menu Toggle - Mobile */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="rgb-hover-glow p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 ml-4 flex items-center justify-center cursor-pointer relative z-50"
+              className="lg:hidden p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 ml-4 flex items-center justify-center cursor-pointer relative z-50"
               aria-label="Toggle Menu"
             >
               {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
