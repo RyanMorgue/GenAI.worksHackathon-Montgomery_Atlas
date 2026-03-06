@@ -107,15 +107,18 @@ export default function HistoryPage() {
                 {/* Display Area */}
                 <div className="lg:col-span-8 space-y-6">
                     <div className="glass-panel p-8 rounded-3xl border border-white/10 relative overflow-hidden group">
-                        {/* AI Story Video Placeholder */}
-                        <div className="relative w-full h-[400px] rounded-2xl overflow-hidden cursor-pointer group mb-8 border border-white/10">
+                        {/* AI Story Video Placeholder — click launches fullscreen cinematic */}
+                        <div
+                            className="relative w-full h-[400px] rounded-2xl overflow-hidden cursor-pointer group mb-8 border border-white/10"
+                            onClick={() => setIsFullscreenCinematic(true)}
+                        >
                             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10 flex flex-col items-center justify-center">
                                 <div className="w-20 h-20 rounded-full bg-amber-500/80 text-white flex items-center justify-center backdrop-blur-sm group-hover:scale-110 group-hover:bg-amber-500 transition-all shadow-[0_0_30px_rgba(245,158,11,0.5)]">
                                     <Play size={40} className="ml-2" />
                                 </div>
                                 <p className="mt-4 font-bold text-amber-300 tracking-widest uppercase text-sm drop-shadow-md">Play Cinematic Story</p>
                             </div>
-                            {/* The generated image acting as the cinematic frame */}
+                            {/* Background image */}
                             <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${activeLocation.image}')` }}></div>
                         </div>
 
