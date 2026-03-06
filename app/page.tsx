@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, Suspense } from 'react';
+import Link from 'next/link';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import MontgomeryScene from '@/components/MontgomeryScene';
@@ -188,6 +189,51 @@ export default function Home() {
               &quot;Plan my perfect day in Montgomery&quot;
             </button>
           </p>
+
+          {/* Cinematic Story Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="mb-8"
+          >
+            <Link href="/history">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(217, 119, 6, 0.6)' }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative px-8 py-3 rounded-full font-bold text-white overflow-hidden"
+              >
+                {/* Animated gradient background */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 rounded-full"
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+                {/* Glow effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500/0 via-amber-300/50 to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
+                {/* Shine effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0"
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  style={{ group-hover: { opacity: 1 } }}
+                />
+                {/* Content */}
+                <span className="relative z-10 flex items-center gap-2 text-lg drop-shadow-lg">
+                  <motion.span
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                    className="text-xl"
+                  >
+                    ▶
+                  </motion.span>
+                  Play Cinematic Storyline
+                </span>
+              </motion.button>
+            </Link>
+          </motion.div>
 
           {/* Chat History with better styling */}
           {chatLog.length > 0 && (
