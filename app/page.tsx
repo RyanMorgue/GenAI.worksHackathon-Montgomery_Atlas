@@ -1,16 +1,44 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import { Mic, Send, Bot } from 'lucide-react';
 import Image from 'next/image';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { motion } from 'framer-motion';
+
 
 export default function Home() {
   const [query, setQuery] = useState('');
   const [chatLog, setChatLog] = useState<{ role: 'user' | 'copilot', text: string }[]>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const { transcript, listening, start, stop } = useSpeechRecognition();
+
+  // hero background cycling
+  const heroScenes = [
+    { name: 'Peace Memorial', bg: 'radial-gradient(circle at center, #0f0f17 0%, #050510 100%)' },
+    { name: 'Freedom Monument', bg: 'linear-gradient(135deg, #1a1a2e, #0f0f17)' },
+    { name: 'Legacy Museum', bg: 'linear-gradient(45deg, #09091f, #050510)' },
+    { name: 'Rosa Parks Statue', bg: 'radial-gradient(circle at 20% 20%, #111118, #07070d)' },
+    { name: 'Civil Rights Memorial', bg: 'linear-gradient(120deg, #0a0a12, #050510)' },
+    { name: 'Bicentennial Park', bg: 'radial-gradient(circle at 80% 80%, #12121b, #050510)' },
+    { name: 'Hank Williams', bg: 'linear-gradient(210deg, #1b1b2a, #0a0a12)' },
+  ];
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIndex(i => (i + 1) % heroScenes.length);
+    }, 12000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // automatically scroll to bottom when a new message is added
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatLog]);
+
 
   // Append transcript to query when speech recognition produces text
   useEffect(() => {
@@ -65,11 +93,39 @@ export default function Home() {
   return (
     <div className="space-y-12 animate-in fade-in duration-700">
 
-      {/* AI Copilot Hero Section - Huly/Riot Games Aesthetic */}
+      {/* AI Copilot Hero Section - Huly/Riot Games Aesthetic with animated layers */}
       <section id="copilot" className="rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden min-h-[500px] flex flex-col justify-end border border-white/10 glass-panel">
-        {/* Animated Background Layers */}
-        <div className="absolute inset-0 z-0 bg-[#050510]"></div>
-        <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen bg-center bg-cover animate-slow-pan" style={{ backgroundImage: "url('/bg-skyline.png')" }}></div>
+        {/* Cinematic animated background with slow pan and crossfade between scenes */}
+        <motion.div
+          className="absolute inset-0 z-0"
+          animate={{ x: [-20, 20], y: [-10, 10] }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+          style={{ background: heroScenes[heroIndex].bg }}
+        />
+        {/* subtle dark overlay for contrast */}
+        <motion.div
+          className="absolute inset-0 z-0"
+          initial={{ opacity: 0.5 }}
+          animate={{ opacity: [0.5, 0.6, 0.5] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ background: 'rgba(0,0,0,0.4)' }}
+        />
+        {/* floating particles */}
+        <motion.div
+          className="absolute inset-0 z-10 pointer-events-none"
+          animate={{ opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          {[...Array(20)].map((_, i) => (
+            <motion.span
+              key={i}
+              className="absolute bg-white rounded-full"
+              style={{ width: 2, height: 2, top: `${Math.random()*100}%`, left: `${Math.random()*100}%` }}
+              animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
+              transition={{ duration: 10 + Math.random()*10, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          ))}
+        </motion.div>
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#0a0a0b] via-transparent to-transparent opacity-80"></div>
 

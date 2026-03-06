@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { BookOpen, Play, Pause, MapPin, Volume2, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { landmarks } from '@/data/landmarks';
 import { historicalEvents } from '@/data/historicalEvents';
@@ -176,18 +177,31 @@ export default function HistoryPage() {
 
                     {/* Story Player */}
                     <div className="relative w-full h-[500px] rounded-2xl overflow-hidden mb-6 border border-white/10">
-                        {historicalEvents.map((event, index) => (
-                            <div
-                                key={event.year}
-                                className={`absolute inset-0 transition-opacity duration-1000 ${currentScene === index ? 'opacity-100' : 'opacity-0'}`}
-                                style={{ backgroundImage: `url('${event.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                            >
-                                <div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8">
-                                    <h3 className="text-3xl font-extrabold text-white mb-2">{event.year}: {event.title}</h3>
-                                    <p className="text-zinc-200 text-lg leading-relaxed">{event.description}</p>
-                                </div>
-                            </div>
-                        ))}
+                        <AnimatePresence initial={false} mode="wait">
+                            {historicalEvents.map((event, index) => {
+                                if (currentScene !== index) return null;
+                                return (
+                                    <motion.div
+                                        key={event.year}
+                                        className="absolute inset-0"
+                                        initial={{ opacity: 0, scale: 1.1 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 1.2 }}
+                                        style={{ backgroundImage: `url('${event.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                                    >
+                                        <motion.div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.5, duration: 1 }}
+                                        >
+                                            <h3 className="text-3xl font-extrabold text-white mb-2">{event.year}: {event.title}</h3>
+                                            <p className="text-zinc-200 text-lg leading-relaxed">{event.description}</p>
+                                        </motion.div>
+                                    </motion.div>
+                                );
+                            })}
+                        </AnimatePresence>
                         {!isStoryPlaying && (
                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                                 <button
