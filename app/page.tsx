@@ -1,62 +1,29 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import { Mic, Send, Bot } from 'lucide-react';
 import Image from 'next/image';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 export default function Home() {
   const [query, setQuery] = useState('');
   const [chatLog, setChatLog] = useState<{ role: 'user' | 'copilot', text: string }[]>([]);
-  const [isListening, setIsListening] = useState(false);
+  const { transcript, listening, start, stop } = useSpeechRecognition();
 
-  // Custom Hook or ref for Speech Recognition
-  const recognitionRef = useRef<any>(null);
-
+  // Append transcript to query when speech recognition produces text
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = 'en-US';
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        recognition.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript;
-          setQuery(prev => prev + ' ' + transcript);
-          setIsListening(false);
-        };
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        recognition.onerror = (event: any) => {
-          console.error(event.error);
-          setIsListening(false);
-        };
-
-        recognition.onend = () => {
-          setIsListening(false);
-        };
-
-        recognitionRef.current = recognition;
-      }
+    if (transcript) {
+      setQuery(prev => prev + ' ' + transcript);
     }
-  }, []);
+  }, [transcript]);
 
   const handleMicClick = () => {
-    if (!recognitionRef.current) {
-      alert("Speech recognition isn't supported in this browser.");
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+    if (listening) {
+      stop();
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      start();
     }
   };
 
@@ -134,7 +101,7 @@ export default function Home() {
               />
               <button
                 onClick={handleMicClick}
-                className={`absolute right-3 top-[10px] p-2 rounded-full transition-colors ${isListening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
+                className={`absolute right-3 top-[10px] p-2 rounded-full transition-colors ${listening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
                 title="Voice Input"
               >
                 <Mic size={20} />

@@ -1,11 +1,8 @@
 import { CalendarDays, MapPin, Ticket } from 'lucide-react';
 
+import { events } from '@/data/events';
+
 export default function RecreationPage() {
-    const events = [
-        { name: "Montgomery Museum of Fine Arts Tour", type: "Museum", date: "Today, 10:00 AM" },
-        { name: "Riverfront Concert Series", type: "Event", date: "Tomorrow, 7:00 PM" },
-        { name: "Rosa Parks Library Exhibit", type: "Historic", date: "Ongoing" },
-    ];
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">

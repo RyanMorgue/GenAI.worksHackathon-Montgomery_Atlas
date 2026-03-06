@@ -3,27 +3,9 @@
 import { useState } from 'react';
 import { Briefcase, MapPin, Building, Globe, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Generates 50 deterministic stub jobs for a given page
-const generateJobs = (page: number) => {
-    const jobs = [];
-    const sources = ['LinkedIn', 'Indeed'];
-    const models = ['Remote', 'Hybrid', 'Onsite'];
-    const titles = ['Software Engineer', 'Data Analyst', 'Marketing Manager', 'Operations Director', 'City Planner', 'Civil Engineer', 'Registered Nurse', 'Financial Advisor'];
+import { generateJobs, Job } from '@/lib/jobGenerator';
 
-    for (let i = 1; i <= 50; i++) {
-        const id = (page - 1) * 50 + i;
-        jobs.push({
-            id: `job-${id}`,
-            title: `Senior ${titles[id % titles.length]}`,
-            company: id % 3 === 0 ? 'State of Alabama' : (id % 2 === 0 ? 'TechNova Solutions' : 'Montgomery Healthcare'),
-            location: 'Montgomery, AL',
-            salary: `$${70 + (id % 50)}k - $${100 + (id % 50)}k`,
-            model: models[id % 3],
-            source: sources[id % 2],
-        });
-    }
-    return jobs;
-};
+
 
 export default function JobsPage() {
     const [currentPage, setCurrentPage] = useState(1);

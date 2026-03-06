@@ -5,7 +5,7 @@ The AI City Copilot is a dark-modern workspace dashboard providing an intuitive 
 
 ## Project Structure
 This application is self-contained. For detailed internal specifications, please review the `docs/` folder:
-- [System Architecture](docs/architecture.md)
+- [System Architecture](docs/ARCHITECTURE.md)
 - [Feature Details](docs/features.md)
 - [Deployment Guide](docs/deployment.md)
 
@@ -16,9 +16,9 @@ This application is self-contained. For detailed internal specifications, please
 4. **Transport & Job Boards**: Highly paginated and modular Next.js routes ensuring scale capabilities without frontend degradation.
 
 ## Tech Stack
-- Frontend: Next.js 15 (App Router), React 19, TailwindCSS v4, Framer Motion
+- Frontend: Next.js 16 (App Router), React 19, TailwindCSS v4, Framer Motion
 - UI Icons & Art: Lucide React, Custom Dark Fantasy Generation
-- Backend Route logic: Next Edge / Express Runtime
+- Backend Route logic: Native Next.js API routes, edge middleware (no Express)
 
 ## Deployment
 Automatically deployed to Vercel via Github branch mapping on `main`.

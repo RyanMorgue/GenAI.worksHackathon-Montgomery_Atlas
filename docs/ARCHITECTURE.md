@@ -1,39 +1,62 @@
 # System Architecture
 
-## Overview
-AI City Copilot is a Next.js 15 (App Router) based dashboard designed to run autonomously with high resilience. It combines client-side interactive routing, server-rendered components, and Next.js Edge proxy servers for seamless backend integrations.
+**AI City Copilot** (a.k.a. *Montgomery Atlas*) is built on Next.js 16 using the App Router. The application combines client-side interactivity, server components, and lightweight edge middleware to create a modular, maintainable smart‑city dashboard.
 
 ## Core Stack
-- **Framework**: Next.js 15
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS v4, Lucide React (Iconography)
-- **Map System**: Leaflet / React-Leaflet
-- **Data Visualization**: Recharts
-- **Deployment**: Vercel
+- **Styling**: Tailwind CSS v4, custom dark theme
+- **Icons**: Lucide React
+- **Mapping**: Leaflet via `react-leaflet` with Carto dark basemap
+- **Charts**: Recharts
+- **Runtime**: Node 20 on Vercel or any Node host
 
-## System Diagram
+## High‑Level Diagram
 ```mermaid
-graph TD;
-    A[Client Browser] -->|Next.js Router| B(UI Components)
-    B --> C{Dashboard Modules}
-    C --> D[Business Discovery]
-    C --> E[Finance Dashboard]
-    C --> F[Crime Router]
-    C --> G[History Module]
-    B --> H[AI Copilot]
-    H -->|Proxy Route| I(Next.js API Edge)
-    I -->|Fetch| J[External LLM]
-    D -->|Data| K[Client State Map]
+flowchart LR
+    Client[Browser / Mobile App]
+    Client -->|Next.js App Router| UI[React Components]
+    UI --> Module[Dashboard Modules]
+    Module --> Business[Business Discovery]
+    Module --> Finance[Finance Dashboard]
+    Module --> Crime[Crime Dashboard]
+    Module --> History[Historic Module]
+    UI --> Copilot[AI Copilot Interface]
+    Copilot -->|/api/chat| Backend[Next.js API / Middleware]
+    Backend -->|LLM API| LLM[External Model]
+    Backend -->|SODA| OpenData[Montgomery Open Data]
+    Backend -->|Scraper| BrightData[Bright Data Service]
+    UI --> Map[Leaflet Map Component]
+    Map -->|tiles| Carto[Carto Dark Basemap]
 ```
 
-## Module Breakdown
+## Directory Structure
+```
+/app             # Next.js pages and layouts (App Router)
+/components      # Reusable UI components
+/lib             # Business logic, API wrappers, generators
+/hooks           # Custom React hooks (voice, etc.)
+/data            # Static arrays and test data
+/public          # Static assets (images, icons)
+/styles          # Tailwind globals and overrides
+```
 
-1. **Dashboard Home (/app/page.tsx)**: Integrates the AI Copilot hero unit, Finance Dashboard, and the Local Discovery grid.
-2. **AI Copilot (services/aiCopilotService.ts)**: Handles contextual queries routed through `/api/chat` to protect keys. Implements Web Speech API for voice interactions.
-3. **Map System (components/Map.tsx)**: Lazy-loaded Leaflet mapping bypassing SSR constraints. Uses a customized dark Carto tile layer for the huly.io aesthetic.
-4. **Data Integrations**: Mocks Bright Data and SODA endpoints for resilient hackathon demonstrations. Data structures are deterministic.
+## Key Modules
+1. **App shell (`/app/layout.tsx`, `globals.css`)** - dark, OS‑style workspace with a sticky toolbar and full‑screen overlay menu.
+2. **AI Copilot (`/components/` + `/lib/aiCopilotService.ts`)** - voice/text chat UI; server‑side LLM requests via `/app/api/*` routes.
+3. **Map (`/components/Map.tsx`)** - dynamic client component loaded only in the browser, avoids SSR errors.
+4. **Business discovery & job generator** - data functions live under `/lib`, UI under `/components` or `app` pages.
+5. **Middleware (`middleware.ts`)** - rate limiting, prompt injection checks, security headers, and noindex policy.
+6. **API routes (`/app/api/*/route.ts`)** - health, chat, scrapers, etc.; execute without Express.
 
-## Security Constraints
-- All backend calls are proxied through route handlers (`proxy.ts` / API directories) to obscure API keys.
-- Rate limiting is structurally supported via Vercel Edge rules.
-- `noindex` headers dictate the app should remain unindexed.
+## Security & Compliance
+- **Middleware** enforces IP‑based rate limits and scans POST bodies for prohibited phrases.
+- **No analytics**: `X-Robots-Tag: noindex, nofollow`; zero tracking.
+- **Prompt injection** rules are hard‑coded with clear error responses.
+
+## Evolution Path
+- Move heavyweight operations (scraping, LLM orchestration) into edge workers or serverless functions.
+- Add Redis cache for business and itinerary results.
+- Abstract city data to configuration for multi‑city support.
+
+*This document replaces earlier references to Next.js 15 and Express; the current codebase adheres to the new structure.*

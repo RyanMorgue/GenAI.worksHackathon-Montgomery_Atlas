@@ -1,7 +1,7 @@
 'use client';
 
 import { Inter } from 'next/font/google';
-import './globals.css';
+import '@/styles/globals.css';
 import { useState } from 'react';
 import { Menu, X, Navigation, Briefcase, ShieldAlert, BookOpen, HeartPulse, HardHat, CalendarDays } from 'lucide-react';
 import Link from 'next/link';

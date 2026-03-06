@@ -5,7 +5,7 @@ const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 const RATE_LIMIT_WINDOW_MS = 60000;
 const MAX_REQUESTS_PER_WINDOW = 20;
 
-export default async function proxy(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/api/') || request.url.includes('/chat')) {
 
         // Fixed: 'ip' property is removed in Next 15+ request objects, use headers
