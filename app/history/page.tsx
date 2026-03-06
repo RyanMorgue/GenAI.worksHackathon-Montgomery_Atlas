@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Play, Pause, MapPin, Volume2, Clock } from 'lucide-react';
+import { BookOpen, Play, Pause, MapPin, Volume2, Clock, Maximize2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { landmarks } from '@/data/landmarks';
 import { historicalEvents } from '@/data/historicalEvents';
+import CinematicStoryPlayer from '@/components/CinematicStoryPlayer';
 
 
 
@@ -14,6 +15,7 @@ export default function HistoryPage() {
     const [isPlayingTTS, setIsPlayingTTS] = useState(false);
     const [isStoryPlaying, setIsStoryPlaying] = useState(false);
     const [currentScene, setCurrentScene] = useState(0);
+    const [isFullscreenCinematic, setIsFullscreenCinematic] = useState(false);
 
     // Web Speech API for TTS
     const handleTTS = () => {
@@ -165,69 +167,57 @@ export default function HistoryPage() {
                 </div>
             </div>
 
-            {/* AI Animated Historical Story */}
-            <div className="glass-panel p-8 rounded-3xl border border-purple-500/20 relative overflow-hidden">
+            {/* AI Animated Historical Story - Premium Cinematic */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="glass-panel p-8 rounded-3xl border border-purple-500/20 relative overflow-hidden"
+            >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="relative z-10">
-                    <h2 className="text-2xl font-extrabold text-white mb-6 flex items-center gap-3">
-                        <Play size={28} className="text-purple-400" />
-                        AI Animated Historical Story
-                    </h2>
-                    <p className="text-zinc-400 mb-6">Experience Montgomery's history through cinematic storytelling with voice narration.</p>
-
-                    {/* Story Player */}
-                    <div className="relative w-full h-[500px] rounded-2xl overflow-hidden mb-6 border border-white/10">
-                        <AnimatePresence initial={false} mode="wait">
-                            {historicalEvents.map((event, index) => {
-                                if (currentScene !== index) return null;
-                                return (
-                                    <motion.div
-                                        key={event.year}
-                                        className="absolute inset-0"
-                                        initial={{ opacity: 0, scale: 1.1 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 1.2 }}
-                                        style={{ backgroundImage: `url('${event.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                                    >
-                                        <motion.div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            transition={{ delay: 0.5, duration: 1 }}
-                                        >
-                                            <h3 className="text-3xl font-extrabold text-white mb-2">{event.year}: {event.title}</h3>
-                                            <p className="text-zinc-200 text-lg leading-relaxed">{event.description}</p>
-                                        </motion.div>
-                                    </motion.div>
-                                );
-                            })}
-                        </AnimatePresence>
-                        {!isStoryPlaying && (
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                                <button
-                                    onClick={handleStoryPlay}
-                                    className="w-20 h-20 rounded-full bg-purple-500/80 text-white flex items-center justify-center backdrop-blur-sm hover:scale-110 hover:bg-purple-500 transition-all shadow-[0_0_30px_rgba(147,51,234,0.5)]"
-                                >
-                                    <Play size={40} className="ml-2" />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex justify-center">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-extrabold text-white flex items-center gap-3">
+                            <Play size={28} className="text-purple-400" />
+                            Montgomery: A Cinematic Journey
+                        </h2>
                         <button
-                            onClick={handleStoryPlay}
-                            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${isStoryPlaying ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-purple-600 hover:bg-purple-500 text-white border border-purple-500/30'}`}
+                            onClick={() => setIsFullscreenCinematic(true)}
+                            className="p-3 rounded-lg bg-purple-600/50 hover:bg-purple-600 text-white transition-all border border-purple-500/30"
+                            title="Fullscreen"
                         >
-                            {isStoryPlaying ? (
-                                <><Pause size={24} /> Stop Story</>
-                            ) : (
-                                <><Play size={24} /> Play Cinematic Story</>
-                            )}
+                            <Maximize2 size={20} />
                         </button>
                     </div>
+                    <p className="text-zinc-400 mb-6">Experience 7 pivotal moments in Montgomery's history through immersive cinematic scenes.</p>
+
+                    {/* Story Player Embedded */}
+                    <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40">
+                        <CinematicStoryPlayer />
+                    </div>
                 </div>
-            </div>
+            </motion.div>
+
+            {/* Fullscreen Cinematic Modal */}
+            <AnimatePresence>
+                {isFullscreenCinematic && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 bg-black"
+                    >
+                        <button
+                            onClick={() => setIsFullscreenCinematic(false)}
+                            className="absolute top-6 right-6 z-60 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all backdrop-blur-md border border-white/20"
+                            title="Close"
+                        >
+                            <X size={24} className="text-white" />
+                        </button>
+                        <CinematicStoryPlayer isFullscreen={true} onClose={() => setIsFullscreenCinematic(false)} />
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
