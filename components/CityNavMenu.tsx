@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Navigation,
   Briefcase,
-  Alert,
+  AlertCircle,
   Info,
   Heart,
   Sparkles,
@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
     id: 'crime',
     label: 'Live Crime & Safety',
     href: '/crime',
-    icon: <Alert size={24} />,
+    icon: <AlertCircle size={24} />,
     color: 'from-red-500 to-orange-500',
     description: 'Real-time crime reports and safety insights',
     accentGradient: 'bg-gradient-to-r from-red-500/20 to-orange-500/20',
