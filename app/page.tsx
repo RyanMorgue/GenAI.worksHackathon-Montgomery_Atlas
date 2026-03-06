@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import { Mic, Send, Bot } from 'lucide-react';
@@ -27,21 +27,30 @@ export default function Home() {
     }
   };
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     if (!query.trim()) return;
 
     setChatLog(prev => [...prev, { role: 'user', text: query }]);
     const currentQuery = query;
     setQuery('');
 
-    // Stub AI response since backend LLM might be missing keys
-    setTimeout(() => {
-      let reply = "Here is some information regarding Montgomery. Based on your request, I recommend checking the discovery module below.";
-      if (currentQuery.toLowerCase().includes('perfect day')) {
-        reply = "Here is your perfect day in Montgomery: \nMorning: Coffee at Prevail Union.\nAfternoon: Visit the Legacy Museum and grab lunch at Chris' Hot Dogs.\nEvening: Walk along the Riverfront and dine at Central.";
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: currentQuery }),
+      });
+      const data = await response.json();
+      if (data.type === 'itinerary') {
+        setChatLog(prev => [...prev, { role: 'copilot', text: data.text }]);
+        // TODO: Handle itinerary display on map
+      } else {
+        setChatLog(prev => [...prev, { role: 'copilot', text: data.text }]);
       }
-      setChatLog(prev => [...prev, { role: 'copilot', text: reply }]);
-    }, 1000);
+    } catch (error) {
+      console.error('Chat error:', error);
+      setChatLog(prev => [...prev, { role: 'copilot', text: 'Sorry, I encountered an error. Please try again.' }]);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

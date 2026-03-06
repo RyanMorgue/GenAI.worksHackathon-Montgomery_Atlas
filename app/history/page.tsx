@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Play, Pause, MapPin, Volume2 } from 'lucide-react';
+import { BookOpen, Play, Pause, MapPin, Volume2, Clock } from 'lucide-react';
 
 import { landmarks } from '@/data/landmarks';
+import { historicalEvents } from '@/data/historicalEvents';
 
 
 
 export default function HistoryPage() {
     const [activeLocation, setActiveLocation] = useState(landmarks[0]);
     const [isPlayingTTS, setIsPlayingTTS] = useState(false);
+    const [isStoryPlaying, setIsStoryPlaying] = useState(false);
+    const [currentScene, setCurrentScene] = useState(0);
 
     // Web Speech API for TTS
     const handleTTS = () => {
@@ -29,6 +32,37 @@ export default function HistoryPage() {
             window.speechSynthesis.speak(utterance);
             setIsPlayingTTS(true);
         }
+    };
+
+    // Animated Story Player
+    const handleStoryPlay = () => {
+        if (isStoryPlaying) {
+            window.speechSynthesis.cancel();
+            setIsStoryPlaying(false);
+            setCurrentScene(0);
+        } else {
+            setIsStoryPlaying(true);
+            setCurrentScene(0);
+            playScene(0);
+        }
+    };
+
+    const playScene = (sceneIndex: number) => {
+        if (sceneIndex >= historicalEvents.length) {
+            setIsStoryPlaying(false);
+            setCurrentScene(0);
+            return;
+        }
+
+        setCurrentScene(sceneIndex);
+        const event = historicalEvents[sceneIndex];
+        const utterance = new SpeechSynthesisUtterance(event.narration);
+        utterance.rate = 0.8;
+        utterance.pitch = 0.7;
+        utterance.onend = () => {
+            setTimeout(() => playScene(sceneIndex + 1), 2000); // Pause between scenes
+        };
+        window.speechSynthesis.speak(utterance);
     };
 
     return (
@@ -105,6 +139,77 @@ export default function HistoryPage() {
                         <p className="text-zinc-300 leading-relaxed text-lg border-l-4 border-amber-500/50 pl-6 py-2">
                             {activeLocation.description}
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Historical Timeline */}
+            <div className="glass-panel p-8 rounded-3xl border border-amber-500/20">
+                <h2 className="text-2xl font-extrabold text-white mb-6 flex items-center gap-3">
+                    <Clock size={28} className="text-amber-400" />
+                    Montgomery Historical Timeline
+                </h2>
+                <div className="relative">
+                    <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-amber-500/30"></div>
+                    {historicalEvents.map((event, index) => (
+                        <div key={event.year} className="relative flex items-start mb-8 ml-8">
+                            <div className="absolute -left-8 w-4 h-4 bg-amber-500 rounded-full border-4 border-[#0a0a0b]"></div>
+                            <div className="ml-6">
+                                <h3 className="text-xl font-bold text-white">{event.year}: {event.title}</h3>
+                                <p className="text-zinc-300 mt-2">{event.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* AI Animated Historical Story */}
+            <div className="glass-panel p-8 rounded-3xl border border-purple-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div className="relative z-10">
+                    <h2 className="text-2xl font-extrabold text-white mb-6 flex items-center gap-3">
+                        <Play size={28} className="text-purple-400" />
+                        AI Animated Historical Story
+                    </h2>
+                    <p className="text-zinc-400 mb-6">Experience Montgomery's history through cinematic storytelling with voice narration.</p>
+
+                    {/* Story Player */}
+                    <div className="relative w-full h-[500px] rounded-2xl overflow-hidden mb-6 border border-white/10">
+                        {historicalEvents.map((event, index) => (
+                            <div
+                                key={event.year}
+                                className={`absolute inset-0 transition-opacity duration-1000 ${currentScene === index ? 'opacity-100' : 'opacity-0'}`}
+                                style={{ backgroundImage: `url('${event.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                            >
+                                <div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-8">
+                                    <h3 className="text-3xl font-extrabold text-white mb-2">{event.year}: {event.title}</h3>
+                                    <p className="text-zinc-200 text-lg leading-relaxed">{event.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                        {!isStoryPlaying && (
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                <button
+                                    onClick={handleStoryPlay}
+                                    className="w-20 h-20 rounded-full bg-purple-500/80 text-white flex items-center justify-center backdrop-blur-sm hover:scale-110 hover:bg-purple-500 transition-all shadow-[0_0_30px_rgba(147,51,234,0.5)]"
+                                >
+                                    <Play size={40} className="ml-2" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-center">
+                        <button
+                            onClick={handleStoryPlay}
+                            className={`flex items-center gap-3 px-8 py-4 rounded-xl font-bold transition-all shadow-lg ${isStoryPlaying ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-purple-600 hover:bg-purple-500 text-white border border-purple-500/30'}`}
+                        >
+                            {isStoryPlaying ? (
+                                <><Pause size={24} /> Stop Story</>
+                            ) : (
+                                <><Play size={24} /> Play Cinematic Story</>
+                            )}
+                        </button>
                     </div>
                 </div>
             </div>
