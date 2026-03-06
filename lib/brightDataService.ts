@@ -45,7 +45,14 @@ export class BrightDataService {
         }
     }
 
-    private generateStubData(category: string, lat: number, lng: number): ScrapedBusiness[] {
+    async scrapeBusinesses(category: string, location: string, limit: number = 10): Promise<ScrapedBusiness[]> {
+        // For MVP, use default Montgomery coordinates
+        const lat = 32.3792;
+        const lng = -86.3077;
+
+        const businesses = await this.discoverBusinesses(category, lat, lng);
+        return businesses.slice(0, limit);
+    }
         // Deterministic realistic stubs for Montgomery
         return [
             {
