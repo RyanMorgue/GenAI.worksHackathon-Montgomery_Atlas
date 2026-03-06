@@ -45,26 +45,26 @@ export default function CrimeSafetyDashboard() {
     }));
 
     return (
-        <section className="bg-white rounded-2xl shadow-xl border border-red-100 overflow-hidden">
-            <header className="p-6 border-b border-slate-100 bg-red-50 flex justify-between items-center">
+        <section className="glass-panel rounded-2xl border border-red-500/20 overflow-hidden">
+            <header className="p-6 border-b border-red-500/20 bg-red-500/5 flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-800">Live Crime & Safety Reports</h2>
-                    <p className="text-slate-500 text-sm mt-1">Sourced from Montgomery Open Data API</p>
+                    <h2 className="text-2xl font-bold text-white">Live Crime & Safety Reports</h2>
+                    <p className="text-zinc-400 text-sm mt-1">Sourced from Montgomery Open Data API</p>
                 </div>
                 <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase tracking-wide">Live Feed</span>
+                    <span className="px-3 py-1 bg-red-500/20 text-red-400 border border-red-500/30 rounded-full text-xs font-bold uppercase tracking-wide">Live Feed</span>
                 </div>
             </header>
 
-            <div className="grid lg:grid-cols-2 gap-0 border-b border-slate-100">
-                <div className="h-[400px] border-r border-slate-100 relative">
+            <div className="grid lg:grid-cols-5 gap-0 border-b border-white/10">
+                <div className="lg:col-span-3 h-[540px] border-r border-white/10 relative">
                     {/* Simulated Heatmap via Markers */}
                     <SmartCityMap pois={mapPois} centerLat={32.3792} centerLng={-86.3077} zoom={13} />
                 </div>
 
-                <div className="p-6 flex flex-col justify-center">
-                    <h3 className="text-lg font-bold text-slate-700 mb-6">7-Day Incident Trend</h3>
-                    <div className="h-[300px] w-full">
+                <div className="lg:col-span-2 p-6 flex flex-col justify-center">
+                    <h3 className="text-lg font-bold text-zinc-300 mb-6">7-Day Incident Trend</h3>
+                    <div className="h-[340px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                 <defs>
@@ -73,10 +73,10 @@ export default function CrimeSafetyDashboard() {
                                         <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-                                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
+                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8' }} />
+                                <Tooltip contentStyle={{ backgroundColor: '#111113', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#e2e8f0' }} />
                                 <Area type="monotone" dataKey="incidents" stroke="#ef4444" fillOpacity={1} fill="url(#colorIncidents)" />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -84,19 +84,19 @@ export default function CrimeSafetyDashboard() {
                 </div>
             </div>
 
-            <div className="p-6 bg-slate-50">
-                <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Recent Alerts</h3>
+            <div className="p-6 bg-black/20">
+                <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Recent Alerts</h3>
                 <div className="space-y-3">
                     {crimeData.map(c => (
-                        <div key={c.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <div key={c.id} className="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-white/5">
                             <div className="flex items-center gap-4">
                                 <div className={`w-3 h-3 rounded-full ${c.severity === 'High' ? 'bg-red-500' : c.severity === 'Medium' ? 'bg-yellow-500' : 'bg-blue-500'}`}></div>
                                 <div>
-                                    <h4 className="font-bold text-slate-800">{c.type}</h4>
-                                    <p className="text-xs text-slate-500">{new Date(c.timestamp).toLocaleString()}</p>
+                                    <h4 className="font-bold text-white">{c.type}</h4>
+                                    <p className="text-xs text-zinc-500">{new Date(c.timestamp).toLocaleString()}</p>
                                 </div>
                             </div>
-                            <span className="text-sm font-medium text-slate-600">Severity: {c.severity}</span>
+                            <span className="text-sm font-medium text-zinc-400">Severity: {c.severity}</span>
                         </div>
                     ))}
                 </div>
