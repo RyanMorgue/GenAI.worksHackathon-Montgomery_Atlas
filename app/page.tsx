@@ -54,8 +54,11 @@ export default function Home() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.ctrlKey) {
       handleAsk();
+    } else if (e.key === 'Enter' && e.ctrlKey) {
+      // Insert new line
+      setQuery(prev => prev + '\n');
     }
   };
 
@@ -100,13 +103,13 @@ export default function Home() {
           {/* Interactive Input Layer */}
           <div className="relative max-w-2xl group flex items-center gap-2">
             <div className="relative flex-1 rgb-hover-glow rounded-full">
-              <input
-                type="text"
+              <textarea
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask your civic assistant..."
-                className="w-full bg-[#111113]/80 border border-white/10 rounded-full py-4 pl-6 pr-16 text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/50 transition-all shadow-inner backdrop-blur-md"
+                className="w-full bg-[#111113]/80 border border-white/10 rounded-l-xl py-4 pl-6 pr-16 text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/50 transition-all shadow-inner backdrop-blur-md resize-none"
+                rows={1}
               />
               <button
                 onClick={handleMicClick}

@@ -53,6 +53,8 @@ export class BrightDataService {
         const businesses = await this.discoverBusinesses(category, lat, lng);
         return businesses.slice(0, limit);
     }
+
+    private generateStubData(category: string, lat: number, lng: number): ScrapedBusiness[] {
         // Deterministic realistic stubs for Montgomery
         return [
             {

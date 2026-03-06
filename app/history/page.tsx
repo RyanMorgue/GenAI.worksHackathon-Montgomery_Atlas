@@ -34,7 +34,7 @@ export default function HistoryPage() {
         }
     };
 
-    // Animated Story Player
+    // Handle starting or stopping the animated story playback
     const handleStoryPlay = () => {
         if (isStoryPlaying) {
             window.speechSynthesis.cancel();
@@ -47,6 +47,7 @@ export default function HistoryPage() {
         }
     };
 
+    // Recursive function to play each scene with narration
     const playScene = (sceneIndex: number) => {
         if (sceneIndex >= historicalEvents.length) {
             setIsStoryPlaying(false);
@@ -60,7 +61,7 @@ export default function HistoryPage() {
         utterance.rate = 0.8;
         utterance.pitch = 0.7;
         utterance.onend = () => {
-            setTimeout(() => playScene(sceneIndex + 1), 2000); // Pause between scenes
+            setTimeout(() => playScene(sceneIndex + 1), 2000); // Brief pause between scenes
         };
         window.speechSynthesis.speak(utterance);
     };
