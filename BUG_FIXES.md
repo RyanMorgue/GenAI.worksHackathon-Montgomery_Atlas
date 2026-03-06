@@ -75,6 +75,34 @@ Documented all bugs identified and fixed during the engineering quality pass. Ea
 - **Files Changed**: `app/history/page.tsx`
 - **Verification**: Smoother animations on all devices
 
+### 11. Chat Scroll Behavior
+- **Issue**: New messages did not automatically scroll into view
+- **Root Cause**: Missing scroll logic in chat component
+- **Solution**: Added `useRef` and effect to scroll container on chatLog updates
+- **Files Changed**: `app/page.tsx`
+- **Verification**: Chat pane auto-scrolls to latest message
+
+### 12. Hero Background Animation
+- **Issue**: Hero section had static background
+- **Root Cause**: No animated layers or landmark visuals
+- **Solution**: Integrated framer-motion with cycling gradient scenes and floating particles
+- **Files Changed**: `app/page.tsx`
+- **Verification**: Hero shows slow-moving cinematic layers with parallax effects
+
+### 13. Historical Story Cinematic Effects
+- **Issue**: Scene transitions lacked cinematic flair
+- **Root Cause**: Plain opacity toggles
+- **Solution**: Added framer-motion `AnimatePresence` with fade/scale transitions
+- **Files Changed**: `app/history/page.tsx`
+- **Verification**: Scenes crossfade with scale and narration sync
+
+### 14. Dark Theme Finance Dashboard
+- **Issue**: Finance module used light theme colors
+- **Root Cause**: Default component styling
+- **Solution**: Converted all panels, charts, and cards to dark theme with appropriate Tailwind classes
+- **Files Changed**: `components/FinanceDashboard.tsx`
+- **Verification**: Charts and components now display correctly in dark mode
+
 ## Code Quality Improvements
 
 ### Human-like Code Patterns

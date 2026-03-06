@@ -1,12 +1,18 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
+import MontgomeryScene from '@/components/MontgomeryScene';
 import { Mic, Send, Bot } from 'lucide-react';
 import Image from 'next/image';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { motion } from 'framer-motion';
+
+// Loading placeholder for 3D scene
+const SceneLoading = () => (
+  <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] to-[#0a0a12]" />
+);
 
 
 export default function Home() {
@@ -81,11 +87,14 @@ export default function Home() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter submits unless Ctrl is held (new line)
     if (e.key === 'Enter' && !e.ctrlKey) {
+      e.preventDefault();
       handleAsk();
     } else if (e.key === 'Enter' && e.ctrlKey) {
-      // Insert new line
+      // Insert newline at cursor position
+      e.preventDefault();
       setQuery(prev => prev + '\n');
     }
   };
@@ -93,48 +102,85 @@ export default function Home() {
   return (
     <div className="space-y-12 animate-in fade-in duration-700">
 
-      {/* AI Copilot Hero Section - Huly/Riot Games Aesthetic with animated layers */}
-      <section id="copilot" className="rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden min-h-[500px] flex flex-col justify-end border border-white/10 glass-panel">
-        {/* Cinematic animated background with slow pan and crossfade between scenes */}
+      {/* AI Copilot Hero Section - Cinematic 3D + Riot Games Aesthetic */}
+      <section id="copilot" className="rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden min-h-[600px] flex flex-col justify-end border border-white/10 glass-panel">
+        
+        {/* 3D Animated Background Layer */}
+        <Suspense fallback={<SceneLoading />}>
+          <div className="absolute inset-0 z-0 opacity-60">
+            <MontgomeryScene />
+          </div>
+        </Suspense>
+
+        {/* Cinematic animated gradient overlay */}
         <motion.div
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-5"
           animate={{ x: [-20, 20], y: [-10, 10] }}
           transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
           style={{ background: heroScenes[heroIndex].bg }}
+          style={{
+            background: heroScenes[heroIndex].bg,
+            opacity: 0.3,
+            mixBlendMode: 'screen'
+          }}
         />
-        {/* subtle dark overlay for contrast */}
+        {/* subtle dark overlay for contrast and depth lighting effect */}
         <motion.div
-          className="absolute inset-0 z-0"
-          initial={{ opacity: 0.5 }}
-          animate={{ opacity: [0.5, 0.6, 0.5] }}
+          className="absolute inset-0 z-10"
+          initial={{ opacity: 0.6 }}
+          animate={{ opacity: [0.5, 0.65, 0.5] }}
           transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ background: 'rgba(0,0,0,0.4)' }}
+          style={{ background: 'radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)' }}
         />
-        {/* floating particles */}
+        
+        {/* Depth lighting layers (Riot Games style) */}
         <motion.div
-          className="absolute inset-0 z-10 pointer-events-none"
+          className="absolute inset-0 z-8 pointer-events-none"
+          animate={{ opacity: [0.1, 0.25, 0.1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-transparent to-violet-500/20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/10 via-transparent to-blue-500/10" />
+        </motion.div>
+
+        {/* floating particles with improved layering */}
+        <motion.div
+          className="absolute inset-0 z-15 pointer-events-none"
           animate={{ opacity: [0.2, 0.5, 0.2] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         >
-          {[...Array(20)].map((_, i) => (
+          {[...Array(30)].map((_, i) => (
             <motion.span
               key={i}
-              className="absolute bg-white rounded-full"
-              style={{ width: 2, height: 2, top: `${Math.random()*100}%`, left: `${Math.random()*100}%` }}
-              animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
-              transition={{ duration: 10 + Math.random()*10, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bg-white rounded-full blur-sm"
+              style={{ 
+                width: 1 + Math.random() * 2, 
+                height: 1 + Math.random() * 2, 
+                top: `${Math.random()*100}%`, 
+                left: `${Math.random()*100}%`,
+                boxShadow: `0 0 ${4 + Math.random() * 4}px rgba(255,255,255,0.4)`
+              }}
+              animate={{ y: [-30, 20], x: [0, Math.random() * 20 - 10], opacity: [0, 1, 0] }}
+              transition={{ duration: 8 + Math.random()*12, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
             />
           ))}
         </motion.div>
-        <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#0a0a0b] via-transparent to-transparent opacity-80"></div>
+        
+        {/* Gradient overlays for depth */}
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent"></div>
+        <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#0a0a0b]/60 via-transparent to-transparent opacity-70"></div>
 
-        <div className="relative z-10 max-w-3xl">
+        {/* Content Layer */}
+        <div className="relative z-30 max-w-3xl">
           <div className="flex items-center gap-3 mb-4">
             <Bot className="text-indigo-400 w-8 h-8 filter drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">
               Meet your City Copilot.
             </h2>
+          </div>
+          {/* landmark subtitle */}
+          <div className="text-sm text-zinc-400 italic mb-4">
+            {heroScenes[heroIndex].name}
           </div>
           <p className="text-zinc-300 text-lg md:text-xl mb-8 font-medium drop-shadow-md">
             Ask me anything about Montgomery. Try typing: <br />
@@ -143,42 +189,81 @@ export default function Home() {
             </button>
           </p>
 
-          {/* Chat History */}
+          {/* Chat History with better styling */}
           {chatLog.length > 0 && (
             <div className="mb-6 max-h-[200px] overflow-y-auto space-y-4 pr-4 custom-scrollbar">
               {chatLog.map((log, i) => (
-                <div key={i} className={`flex ${log.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`px-4 py-3 rounded-2xl max-w-[80%] ${log.role === 'user' ? 'bg-indigo-600/80 text-white' : 'glass-panel text-zinc-200'}`}>
-                    {log.text.split('\n').map((line, j) => <p key={j} className="mb-1">{line}</p>)}
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex ${log.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`px-4 py-3 rounded-2xl max-w-[80%] backdrop-blur-sm border ${
+                      log.role === 'user'
+                        ? 'bg-indigo-600/80 border-indigo-400/30 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)]'
+                        : 'bg-white/10 border-white/20 text-zinc-200 shadow-[0_0_10px_rgba(255,255,255,0.1)]'
+                    }`}
+                  >
+                    {log.text.split('\n').map((line, j) => (
+                      <p key={j} className="mb-1">
+                        {line}
+                      </p>
+                    ))}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
 
-          {/* Interactive Input Layer */}
-          <div className="relative max-w-2xl group flex items-center gap-2">
-            <div className="relative flex-1 rgb-hover-glow rounded-full">
-              <textarea
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask your civic assistant..."
-                className="w-full bg-[#111113]/80 border border-white/10 rounded-l-xl py-4 pl-6 pr-16 text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/50 transition-all shadow-inner backdrop-blur-md resize-none"
-                rows={1}
-              />
-              <button
-                onClick={handleMicClick}
-                className={`absolute right-3 top-[10px] p-2 rounded-full transition-colors ${listening ? 'bg-red-500/20 text-red-400 animate-pulse' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
-                title="Voice Input"
-              >
-                <Mic size={20} />
-              </button>
-            </div>
+          {/* Interactive Input Layer with enhanced styling */}
+          <div className="relative max-w-2xl group">
+            <motion.div
+              className="flex items-center gap-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="relative flex-1">
+                <motion.div
+                  className="absolute inset-0 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 0%, rgba(99,102,241,0.3), transparent)',
+                    filter: 'blur(8px)',
+                  }}
+                />
+                <textarea
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask your civic assistant..."
+                  className="relative w-full bg-white/5 border-2 border-white/15 hover:border-indigo-400/40 rounded-l-xl py-4 pl-6 pr-16 text-white placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/60 focus:bg-white/10 transition-all shadow-inner backdrop-blur-md resize-none"
+                  rows={1}
+                />
+                <button
+                  onClick={handleMicClick}
+                  className={`absolute right-3 top-[10px] p-2 rounded-full transition-all ${
+                    listening
+                      ? 'bg-red-500/30 text-red-400 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+                      : 'hover:bg-white/10 text-zinc-400 hover:text-white'
+                  }`}
+                  title="Voice Input"
+                >
+                  <Mic size={20} />
+                </button>
+              </div>
 
-            <button onClick={handleAsk} className="rgb-hover-glow bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0">
-              <Send size={24} />
-            </button>
+              <motion.button
+                onClick={handleAsk}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0 border border-indigo-400/50"
+              >
+                <Send size={24} />
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </section>
