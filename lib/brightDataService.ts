@@ -24,7 +24,7 @@ export class BrightDataService {
     private apiKey: string;
 
     constructor() {
-        this.apiKey = process.env.BRIGHT_DATA_API_KEY || '';
+        this.apiKey = process.env.BRIGHTDATA_API_KEY || '';
     }
 
     async discoverBusinesses(category: string, lat: number, lng: number): Promise<ScrapedBusiness[]> {

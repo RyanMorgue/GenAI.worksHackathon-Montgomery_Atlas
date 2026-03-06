@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BrightDataService } from '@/lib/brightDataService';
+import { warnMissingEnvVars } from '@/lib/validateEnv';
+
+warnMissingEnvVars(['BRIGHTDATA_API_KEY']);
 
 const brightDataService = new BrightDataService();
 
