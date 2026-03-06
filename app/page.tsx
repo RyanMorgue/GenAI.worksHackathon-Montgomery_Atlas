@@ -215,10 +215,9 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500/0 via-amber-300/50 to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
                 {/* Shine effect */}
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0"
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
                   animate={{ x: ['-100%', '100%'] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                  style={{ group-hover: { opacity: 1 } }}
                 />
                 {/* Content */}
                 <span className="relative z-10 flex items-center gap-2 text-lg drop-shadow-lg">
