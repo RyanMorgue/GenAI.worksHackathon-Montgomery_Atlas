@@ -6,7 +6,6 @@ import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import MontgomeryScene from '@/components/MontgomeryScene';
 import { Mic, Send, Bot } from 'lucide-react';
-import Image from 'next/image';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { motion } from 'framer-motion';
 
@@ -118,7 +117,6 @@ export default function Home() {
           className="absolute inset-0 z-5"
           animate={{ x: [-20, 20], y: [-10, 10] }}
           transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          style={{ background: heroScenes[heroIndex].bg }}
           style={{
             background: heroScenes[heroIndex].bg,
             opacity: 0.3,

@@ -6,7 +6,7 @@ import { Store, Coffee, ShoppingBag, Scissors, HandMetal, Sparkles, Dumbbell, Ac
 
 type Category = 'restaurants' | 'cafes' | 'malls' | 'salons' | 'manicure salons' | 'spas' | 'gyms' | 'yoga studios' | 'pilates studios';
 
-// Generate 10+ deterministic items per category
+// Generate 10+ items per category — called inside useState to avoid SSR/client hydration mismatch
 const generatePOIs = () => {
     const categories: Category[] = ['restaurants', 'cafes', 'malls', 'salons', 'manicure salons', 'spas', 'gyms', 'yoga studios', 'pilates studios'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,11 +43,11 @@ const generatePOIs = () => {
     return pois;
 };
 
-const ALL_POIS = generatePOIs();
-
 export default function BusinessDiscovery() {
     const [activeTab, setActiveTab] = useState<'open' | 'closed'>('open');
     const [activeCategory, setActiveCategory] = useState<Category>('restaurants');
+    // Lazy init keeps Math.random() client-only, preventing SSR/hydration mismatch
+    const [ALL_POIS] = useState(() => generatePOIs());
 
     const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setActiveCategory(e.target.value as Category);

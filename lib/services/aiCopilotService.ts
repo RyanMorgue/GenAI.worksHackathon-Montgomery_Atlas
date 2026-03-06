@@ -22,7 +22,7 @@ export class AICopilotService {
     private apiKey: string;
 
     constructor() {
-        this.apiKey = process.env.LLM_API_KEY || '';
+        this.apiKey = process.env.OPENAI_API_KEY || '';
     }
 
     async processPrompt(prompt: string): Promise<CopilotResponse> {
