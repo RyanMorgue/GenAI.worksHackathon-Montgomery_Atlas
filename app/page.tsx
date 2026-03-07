@@ -34,6 +34,26 @@ export default function Home() {
   ];
   const [heroIndex, setHeroIndex] = useState(0);
 
+  // Particle data generated client-only to prevent SSR/hydration mismatch
+  const [particles, setParticles] = useState<{
+    w: number; h: number; top: string; left: string; shadow: string;
+    ax: number[]; dur: number; delay: number;
+  }[]>([]);
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 30 }, () => ({
+        w: 1 + Math.random() * 2,
+        h: 1 + Math.random() * 2,
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        shadow: `0 0 ${4 + Math.random() * 4}px rgba(255,255,255,0.4)`,
+        ax: [0, Math.random() * 20 - 10],
+        dur: 8 + Math.random() * 12,
+        delay: Math.random() * 2,
+      }))
+    );
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setHeroIndex(i => (i + 1) % heroScenes.length);
@@ -168,19 +188,19 @@ export default function Home() {
           animate={{ opacity: [0.2, 0.5, 0.2] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         >
-          {[...Array(30)].map((_, i) => (
+          {particles.map((p, i) => (
             <motion.span
               key={i}
               className="absolute bg-white rounded-full blur-sm"
-              style={{ 
-                width: 1 + Math.random() * 2, 
-                height: 1 + Math.random() * 2, 
-                top: `${Math.random()*100}%`, 
-                left: `${Math.random()*100}%`,
-                boxShadow: `0 0 ${4 + Math.random() * 4}px rgba(255,255,255,0.4)`
+              style={{
+                width: p.w,
+                height: p.h,
+                top: p.top,
+                left: p.left,
+                boxShadow: p.shadow,
               }}
-              animate={{ y: [-30, 20], x: [0, Math.random() * 20 - 10], opacity: [0, 1, 0] }}
-              transition={{ duration: 8 + Math.random()*12, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
+              animate={{ y: [-30, 20], x: p.ax, opacity: [0, 1, 0] }}
+              transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
             />
           ))}
         </motion.div>

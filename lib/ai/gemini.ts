@@ -5,11 +5,16 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const apiKey = process.env.GEMINI_API_KEY || '';
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+// Lazily resolved so the key is read at call time, not at module load.
+// This means adding/changing GEMINI_API_KEY in .env.local takes effect on
+// the next request without requiring a server restart.
+function getClient(): GoogleGenerativeAI | null {
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    return apiKey ? new GoogleGenerativeAI(apiKey) : null;
+}
 
 export function isAvailable(): boolean {
-    return !!genAI;
+    return !!process.env.GEMINI_API_KEY;
 }
 
 /**
@@ -19,8 +24,9 @@ export async function generateText(
     systemInstruction: string,
     userPrompt: string
 ): Promise<string> {
-    if (!genAI) throw new Error('Gemini client not initialized');
-    const model = genAI.getGenerativeModel({
+    const client = getClient();
+    if (!client) throw new Error('Gemini client not initialized');
+    const model = client.getGenerativeModel({
         model: 'gemini-1.5-flash',
         systemInstruction,
     });
@@ -36,8 +42,9 @@ export async function generateJSON(
     systemInstruction: string,
     userPrompt: string
 ): Promise<string> {
-    if (!genAI) throw new Error('Gemini client not initialized');
-    const model = genAI.getGenerativeModel({
+    const client = getClient();
+    if (!client) throw new Error('Gemini client not initialized');
+    const model = client.getGenerativeModel({
         model: 'gemini-1.5-flash',
         systemInstruction,
         generationConfig: { responseMimeType: 'application/json' },

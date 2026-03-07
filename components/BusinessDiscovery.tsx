@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import SmartCityMap from './Map';
 import { Store, Coffee, ShoppingBag, Scissors, HandMetal, Sparkles, Dumbbell, Activity, StretchHorizontal, MapPin, Clock } from 'lucide-react';
 
@@ -46,8 +46,9 @@ const generatePOIs = () => {
 export default function BusinessDiscovery() {
     const [activeTab, setActiveTab] = useState<'open' | 'closed'>('open');
     const [activeCategory, setActiveCategory] = useState<Category>('restaurants');
-    // Lazy init keeps Math.random() client-only, preventing SSR/hydration mismatch
-    const [ALL_POIS] = useState(() => generatePOIs());
+    // Populate client-only via useEffect to prevent SSR/hydration mismatch
+    const [ALL_POIS, setALL_POIS] = useState<ReturnType<typeof generatePOIs>>([]);
+    useEffect(() => { setALL_POIS(generatePOIs()); }, []);
 
     const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setActiveCategory(e.target.value as Category);
@@ -58,7 +59,7 @@ export default function BusinessDiscovery() {
             poi.type === activeCategory &&
             (activeTab === 'open' ? poi.openingStatus === 'Open' : poi.openingStatus === 'Closed')
         );
-    }, [activeTab, activeCategory]);
+    }, [ALL_POIS, activeTab, activeCategory]);
 
     return (
         <section className="glass-panel rounded-3xl border border-white/5 overflow-hidden">
