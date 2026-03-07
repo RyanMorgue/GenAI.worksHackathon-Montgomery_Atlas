@@ -5,7 +5,7 @@
 
 Montgomery City Copilot helps residents and visitors explore Montgomery through interactive maps, historical storytelling, civic data, and AI assistance — all inside a cinematic, dark-themed interface.
 
-Live deployment: [https://genai-works-hackathon-montgomery-atlas.vercel.app](https://genai-works-hackathon-montgomery-atlas.vercel.app)
+Live deployment: [https://genai-works-hackathon-montgomery-at.vercel.app](https://genai-works-hackathon-montgomery-at.vercel.app)
 
 ---
 
