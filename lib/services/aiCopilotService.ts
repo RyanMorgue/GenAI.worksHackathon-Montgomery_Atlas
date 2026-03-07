@@ -26,7 +26,7 @@ export class AICopilotService {
 
     constructor() {
         this.apiKey = process.env.OPENAI_API_KEY || '';
-        this.client = this.apiKey ? new OpenAI({ apiKey: this.apiKey }) : null;
+        this.client = this.apiKey.startsWith('sk-') ? new OpenAI({ apiKey: this.apiKey }) : null;
     }
 
     async processPrompt(prompt: string): Promise<CopilotResponse> {
