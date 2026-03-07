@@ -82,6 +82,15 @@ const navItems: NavItem[] = [
     description: 'Parks, events, and cultural activities',
     accentGradient: 'bg-gradient-to-r from-purple-500/20 to-violet-500/20',
   },
+  {
+    id: 'development',
+    label: 'City Development & News',
+    href: '/development',
+    icon: <Newspaper size={24} />,
+    color: 'from-blue-500 to-cyan-500',
+    description: 'City news, development updates, and announcements',
+    accentGradient: 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20',
+  },
 ];
 
 interface CityNavMenuProps {

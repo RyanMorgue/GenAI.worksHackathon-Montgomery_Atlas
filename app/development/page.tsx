@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Newspaper, Search, Filter, ChevronRight, Zap, TrendingUp } from 'lucide-react';
+import { Newspaper, Search, Filter, ChevronRight, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NewsArticle {
@@ -190,16 +190,20 @@ export default function DevelopmentPage() {
                 rel="noopener noreferrer"
                 className={`group glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition-all hover:shadow-lg h-full flex flex-col relative`}
               >
-                {/* Image Placeholder */}
-                {article.imageUrl && (
-                  <div className="relative h-40 overflow-hidden bg-gradient-to-br from-white/5 to-white/10">
+                {/* Image */}
+                <div className={`relative h-40 overflow-hidden bg-linear-to-br ${config.gradient}`}>
+                  {article.imageUrl && (
                     <img
                       src={article.imageUrl}
                       alt={article.headline}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
+                  )}
+                  <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-30 pointer-events-none">
+                    {config.icon}
                   </div>
-                )}
+                </div>
 
                 {/* Content */}
                 <div className="p-5 flex-1 flex flex-col">
