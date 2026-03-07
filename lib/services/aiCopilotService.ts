@@ -26,7 +26,9 @@ export class AICopilotService {
 
     constructor() {
         this.apiKey = process.env.OPENAI_API_KEY || '';
-        this.client = this.apiKey.startsWith('sk-') ? new OpenAI({ apiKey: this.apiKey }) : null;
+        this.client = this.apiKey.startsWith('sk-')
+            ? new OpenAI({ apiKey: this.apiKey, timeout: 9000, maxRetries: 1 })
+            : null;
     }
 
     async processPrompt(prompt: string): Promise<CopilotResponse> {
@@ -76,6 +78,7 @@ export class AICopilotService {
         }
 
         try {
+            const t0 = Date.now();
             const completion = await this.client.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [
@@ -88,6 +91,7 @@ export class AICopilotService {
                 response_format: { type: 'json_object' },
                 max_tokens: 700,
             });
+            console.log(`[AICopilot] itinerary OK in ${Date.now() - t0}ms`);
 
             const raw = completion.choices[0].message.content || '{}';
             const data = JSON.parse(raw);
@@ -97,8 +101,8 @@ export class AICopilotService {
                 itinerary: { id: `itin-${Date.now()}`, stops: data.stops || [] }
             };
         } catch (err) {
-            console.error('[AICopilot] Itinerary error:', err);
-            return { type: 'chat', text: 'Failed to generate itinerary. Please try again.' };
+            console.error('[AICopilot] Itinerary error:', err instanceof Error ? err.message : err);
+            return { type: 'chat', text: 'AI service temporarily unavailable. Please try again.' };
         }
     }
 
@@ -111,6 +115,7 @@ export class AICopilotService {
         }
 
         try {
+            const t0 = Date.now();
             const completion = await this.client.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [
@@ -122,13 +127,14 @@ export class AICopilotService {
                 ],
                 max_tokens: 300,
             });
+            console.log(`[AICopilot] chat OK in ${Date.now() - t0}ms`);
             return {
                 type: 'chat',
                 text: completion.choices[0].message.content || 'No response.'
             };
         } catch (err) {
-            console.error('[AICopilot] Chat error:', err);
-            return { type: 'chat', text: 'Connection error. Please try again.' };
+            console.error('[AICopilot] Chat error:', err instanceof Error ? err.message : err);
+            return { type: 'chat', text: 'AI service temporarily unavailable. Please try again.' };
         }
     }
 }

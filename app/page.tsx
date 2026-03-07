@@ -76,12 +76,8 @@ export default function Home() {
         body: JSON.stringify({ prompt: currentQuery }),
       });
       const data = await response.json();
-      if (data.type === 'itinerary') {
-        setChatLog(prev => [...prev, { role: 'copilot', text: data.text }]);
-        // TODO: Handle itinerary display on map
-      } else {
-        setChatLog(prev => [...prev, { role: 'copilot', text: data.text }]);
-      }
+      const text = data.text ?? data.error ?? 'No response from AI.';
+      setChatLog(prev => [...prev, { role: 'copilot', text }]);
     } catch (error) {
       console.error('Chat error:', error);
       setChatLog(prev => [...prev, { role: 'copilot', text: 'Sorry, I encountered an error. Please try again.' }]);
