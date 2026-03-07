@@ -49,7 +49,7 @@ Features include:
 - **Node.js** runtime
 
 ### Data Sources
-- **OpenAI API** — AI Copilot chat and itinerary generation
+- **Google Gemini API** — AI Copilot chat and itinerary generation (gemini-1.5-flash)
 - **Bright Data** — business discovery scraping proxy
 - **Montgomery Open Data (SODA)** — civic datasets
 - Internal mock data for jobs, transit, news, health
@@ -135,7 +135,7 @@ ai-city-copilot/
 │   ├── brightDataService.ts      # Bright Data scraping service
 │   ├── jobGenerator.ts           # Deterministic job listing generator
 │   └── services/
-│       ├── aiCopilotService.ts   # OpenAI chat and itinerary engine
+│       ├── aiCopilotService.ts   # Gemini chat and itinerary engine
 │       └── montgomeryOpenData.ts # SODA API wrapper
 │
 ├── hooks/
@@ -153,7 +153,7 @@ The homepage (`app/page.tsx`) renders a 3D animated hero section with the AI Cop
 All external integrations live in `lib/services/`. Each service reads credentials from `process.env` and degrades gracefully to stub data when keys are absent. Runtime warnings are logged via `lib/validateEnv.ts`.
 
 ### AI Copilot Interaction System
-`AICopilotService` routes user prompts by intent. "Plan my perfect day" triggers structured itinerary generation. All other prompts route to the general chat handler. When `OPENAI_API_KEY` is missing, deterministic stub responses are returned automatically.
+`AICopilotService` routes user prompts by intent. "Plan my perfect day" triggers structured itinerary generation. All other prompts route to the general chat handler. When `GEMINI_API_KEY` is missing, deterministic stub responses are returned automatically.
 
 ### Cinematic Storytelling Engine
 `CinematicStoryPlayer` is a fullscreen 7-scene player with:
@@ -174,7 +174,7 @@ Civic data flows through the SODA API wrapper (`montgomeryOpenData.ts`). Dataset
 |---|------|-------------|
 | 1 | JSX | Duplicate `style` prop on `motion.div` in `app/page.tsx` |
 | 2 | Imports | Unused `Image` import in `app/page.tsx` |
-| 3 | Config | Wrong env var `LLM_API_KEY` → `OPENAI_API_KEY` in `aiCopilotService.ts` |
+| 3 | Config | Wrong env var `LLM_API_KEY` → `GEMINI_API_KEY` in `aiCopilotService.ts` |
 | 4 | CSS | Missing classes `rgb-hover-glow` + `custom-scrollbar` in `globals.css` |
 | 5 | SSR | `Math.random()` at module level in `BusinessDiscovery.tsx` causing hydration mismatch |
 | 6 | UI | `CrimeDashboard.tsx` rendered in light theme inside a dark app |
@@ -197,7 +197,7 @@ The following can be created by any developer at no cost:
 
 | API | Sign-up URL |
 |-----|-------------|
-| OpenAI API | https://platform.openai.com/api-keys |
+| Google Gemini API | https://aistudio.google.com/app/apikey |
 | Bright Data | https://brightdata.com |
 | Montgomery Open Data App Token | https://opendata.montgomeryal.gov |
 | NewsAPI | https://newsapi.org/register |
@@ -216,7 +216,7 @@ For this reason, **no API keys are included in the public repository**.
 Copy `.env.example` to `.env.local` and fill in your values:
 
 ```env
-OPENAI_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 BRIGHTDATA_API_KEY=your_key_here
 MONTGOMERY_APP_TOKEN=your_key_here
 JOBS_API_KEY=your_key_here

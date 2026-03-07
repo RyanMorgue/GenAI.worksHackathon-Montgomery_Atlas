@@ -12,8 +12,8 @@ interface EnvCheck {
 
 const ENV_CHECKS: EnvCheck[] = [
   {
-    key: 'OPENAI_API_KEY',
-    description: 'OpenAI — AI Copilot chat & itinerary (https://platform.openai.com/api-keys)',
+    key: 'GEMINI_API_KEY',
+    description: 'Google Gemini — AI Copilot chat & itinerary (https://aistudio.google.com/app/apikey)',
     required: true,
   },
   {

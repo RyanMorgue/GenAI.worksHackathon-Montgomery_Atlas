@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AICopilotService } from '@/lib/services/aiCopilotService';
 import { warnMissingEnvVars } from '@/lib/validateEnv';
 
-warnMissingEnvVars(['OPENAI_API_KEY']);
+warnMissingEnvVars(['GEMINI_API_KEY']);
 
 const copilotService = new AICopilotService();
 const TIMEOUT_MS = 10_000;
