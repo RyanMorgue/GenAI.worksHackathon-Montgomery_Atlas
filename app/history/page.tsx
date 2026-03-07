@@ -118,8 +118,13 @@ export default function HistoryPage() {
                                 </div>
                                 <p className="mt-4 font-bold text-amber-300 tracking-widest uppercase text-sm drop-shadow-md">Play Cinematic Story</p>
                             </div>
-                            {/* Background image */}
-                            <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${activeLocation.image}')` }}></div>
+                            {/* Background image — scale-[1.2] zooms past the baked-in caption bars at top/bottom */}
+                            <img
+                                src={activeLocation.image}
+                                alt=""
+                                className="absolute inset-0 w-full h-full scale-[1.2] group-hover:scale-[1.25] transition-transform duration-1000"
+                                style={{ objectFit: 'cover', objectPosition: 'center' }}
+                            />
                         </div>
 
                         <div className="flex justify-between items-start mb-6">
