@@ -3,6 +3,8 @@
  * Handles natural language processing, intent routing, and structured itinerary generation.
  */
 
+import OpenAI from 'openai';
+
 export interface CopilotResponse {
     type: 'chat' | 'itinerary';
     text: string;
@@ -20,9 +22,11 @@ export interface DayItinerary {
 
 export class AICopilotService {
     private apiKey: string;
+    private client: OpenAI | null;
 
     constructor() {
         this.apiKey = process.env.OPENAI_API_KEY || '';
+        this.client = this.apiKey ? new OpenAI({ apiKey: this.apiKey }) : null;
     }
 
     async processPrompt(prompt: string): Promise<CopilotResponse> {
@@ -38,7 +42,7 @@ export class AICopilotService {
     }
 
     private async generateItinerary(prompt: string): Promise<CopilotResponse> {
-        if (!this.apiKey) {
+        if (!this.client) {
             console.warn('[AICopilot] No LLM API Key. Firing deterministic itinerary stub.');
             return {
                 type: 'itinerary',
@@ -71,25 +75,60 @@ export class AICopilotService {
             };
         }
 
-        // Production would call OpenAPI / Anthropic SDK here and demand structured JSON
-        return {
-            type: 'chat',
-            text: 'Itinerary generation is active but requires a live model connection.'
-        };
+        try {
+            const completion = await this.client.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are a Montgomery, Alabama city guide. Generate a perfect day itinerary as JSON with this exact structure: {"stops":[{"timeBlock":"Morning","location":{"id":"l1","name":"Place Name","lat":32.37,"lng":-86.30},"description":"Short description"}]}. Include 4-6 stops covering morning, lunch, afternoon, and evening. Use real Montgomery locations. Return only valid JSON.'
+                    },
+                    { role: 'user', content: prompt }
+                ],
+                response_format: { type: 'json_object' },
+                max_tokens: 700,
+            });
+
+            const raw = completion.choices[0].message.content || '{}';
+            const data = JSON.parse(raw);
+            return {
+                type: 'itinerary',
+                text: 'Here is your perfect day in Montgomery!',
+                itinerary: { id: `itin-${Date.now()}`, stops: data.stops || [] }
+            };
+        } catch (err) {
+            console.error('[AICopilot] Itinerary error:', err);
+            return { type: 'chat', text: 'Failed to generate itinerary. Please try again.' };
+        }
     }
 
     private async generateChatResponse(prompt: string): Promise<CopilotResponse> {
-        if (!this.apiKey) {
+        if (!this.client) {
             return {
                 type: 'chat',
                 text: `You asked: "${prompt}". I am the Montgomery AI Copilot. Please provide an LLM API Key to enable dynamic responses, or try asking me to "Plan my perfect day in Montgomery".`
             };
         }
 
-        // Native integration placeholder
-        return {
-            type: 'chat',
-            text: 'Dynamic response available when configured.'
-        };
+        try {
+            const completion = await this.client.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: [
+                    {
+                        role: 'system',
+                        content: 'You are ATLAS, an AI city copilot for Montgomery, Alabama. Answer questions about the city concisely and helpfully. Focus on local attractions, history, civic services, dining, and events. Keep responses under 150 words.'
+                    },
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: 300,
+            });
+            return {
+                type: 'chat',
+                text: completion.choices[0].message.content || 'No response.'
+            };
+        } catch (err) {
+            console.error('[AICopilot] Chat error:', err);
+            return { type: 'chat', text: 'Connection error. Please try again.' };
+        }
     }
 }
