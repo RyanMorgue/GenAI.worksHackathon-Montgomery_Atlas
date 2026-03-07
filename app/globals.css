@@ -90,16 +90,31 @@
   }
 }
 
-/* Rosa Parks cinematic character — subtle breathing motion */
+/* Rosa Parks cinematic character — subtle breathing motion (sinusoidal ease) */
 @keyframes hero-breathe {
-  0%, 100% { transform: scale(1) translateY(0px); }
-  50%       { transform: scale(1.025) translateY(-6px); }
+  0%   { transform: scale(1)     translateY(0px); }
+  30%  { transform: scale(1.012) translateY(-3px); }
+  50%  { transform: scale(1.025) translateY(-6px); }
+  70%  { transform: scale(1.012) translateY(-3px); }
+  100% { transform: scale(1)     translateY(0px); }
 }
 
 /* Cinematic portrait glow pulse */
 @keyframes hero-glow-pulse {
   0%, 100% { opacity: 0.18; }
   50%       { opacity: 0.38; }
+}
+
+/* Montgomery ATLAS logo — live AI system pulse */
+@keyframes atlas-logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.45))
+            drop-shadow(0 0 12px rgba(109, 40, 217, 0.18));
+  }
+  50% {
+    filter: drop-shadow(0 0 11px rgba(220, 38, 38, 0.82))
+            drop-shadow(0 0 26px rgba(109, 40, 217, 0.38));
+  }
 }
 
 @layer utilities {
@@ -126,6 +141,11 @@
       0 0 12px rgba(220, 38, 38, 0.3),
       0 0 28px rgba(251, 146, 60, 0.15),
       0 0 48px rgba(139, 92, 246, 0.1);
+  }
+
+  /* Montgomery ATLAS logo pulse — implies live AI system */
+  .atlas-logo-pulse {
+    animation: atlas-logo-pulse 5s ease-in-out infinite;
   }
 
   /* Premium button glow — multi-spectrum hover for primary CTAs */

@@ -124,6 +124,7 @@ export default function Home() {
             opacity: 0.28,
             animation: 'hero-breathe 7s ease-in-out infinite',
             filter: 'sepia(0.2) contrast(1.15) brightness(0.75)',
+            willChange: 'transform',
           }}
         />
         {/* Cinematic portrait glow — red/amber halo behind the character */}

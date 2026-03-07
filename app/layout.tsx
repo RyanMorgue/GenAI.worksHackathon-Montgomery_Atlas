@@ -26,7 +26,7 @@ export default function RootLayout({
         <header className="sticky top-0 z-50 glass-panel border-b border-white/5">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group">
-              <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(220,38,38,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(220,38,38,0.9)] transition-all">⬡</span>
+              <span className="text-2xl atlas-logo-pulse">⬡</span>
               <h1 className="font-bold text-xl tracking-tight text-white group-hover:text-indigo-400 transition-colors">
                 Montgomery <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">ATLAS</span>
               </h1>
