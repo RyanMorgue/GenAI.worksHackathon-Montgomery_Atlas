@@ -90,6 +90,18 @@
   }
 }
 
+/* Rosa Parks cinematic character — subtle breathing motion */
+@keyframes hero-breathe {
+  0%, 100% { transform: scale(1) translateY(0px); }
+  50%       { transform: scale(1.025) translateY(-6px); }
+}
+
+/* Cinematic portrait glow pulse */
+@keyframes hero-glow-pulse {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.38; }
+}
+
 @layer utilities {
   .animate-fade-in {
     @apply animate-[fadeIn_0.5s_ease-in-out];
@@ -103,16 +115,28 @@
     @apply animate-[pulse-glow_2s_ease-in-out_infinite];
   }
 
-  /* RGB border glow on hover — cinematic UI effect */
+  /* RGB border glow on hover — Riot Games cinematic UI effect */
   .rgb-hover-glow {
     position: relative;
     transition: box-shadow 0.3s ease;
   }
   .rgb-hover-glow:hover {
     box-shadow:
-      0 0 0 1px rgba(99, 102, 241, 0.4),
-      0 0 20px rgba(99, 102, 241, 0.2),
-      0 0 40px rgba(139, 92, 246, 0.1);
+      0 0 0 1px rgba(220, 38, 38, 0.5),
+      0 0 12px rgba(220, 38, 38, 0.3),
+      0 0 28px rgba(251, 146, 60, 0.15),
+      0 0 48px rgba(139, 92, 246, 0.1);
+  }
+
+  /* Premium button glow — multi-spectrum hover for primary CTAs */
+  .button-glow {
+    transition: box-shadow 0.3s ease, transform 0.15s ease;
+  }
+  .button-glow:hover {
+    box-shadow:
+      0 0 8px rgba(220, 38, 38, 0.6),
+      0 0 16px rgba(251, 146, 60, 0.4),
+      0 0 28px rgba(139, 92, 246, 0.25);
   }
 
   /* Custom dark scrollbar for chat + list panels */

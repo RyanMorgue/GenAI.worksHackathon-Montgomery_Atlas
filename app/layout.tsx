@@ -19,16 +19,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth dark">
       <head>
-        <title>AI City Copilot | Montgomery OS</title>
+        <title>AI City Copilot | Montgomery ATLAS</title>
       </head>
       <body className={`${inter.className} bg-[#0a0a0b] text-zinc-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200 min-h-screen flex flex-col`}>
         {/* Navigation Toolbar */}
         <header className="sticky top-0 z-50 glass-panel border-b border-white/5">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group">
-              <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(100,100,255,0.6)] transition-all">🤖</span>
+              <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(220,38,38,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(220,38,38,0.9)] transition-all">⬡</span>
               <h1 className="font-bold text-xl tracking-tight text-white group-hover:text-indigo-400 transition-colors">
-                Montgomery <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">OS</span>
+                Montgomery <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">ATLAS</span>
               </h1>
             </Link>
 

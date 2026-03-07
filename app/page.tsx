@@ -5,9 +5,10 @@ import Link from 'next/link';
 import BusinessDiscovery from '@/components/BusinessDiscovery';
 import FinanceDashboard from '@/components/FinanceDashboard';
 import MontgomeryScene from '@/components/MontgomeryScene';
-import { Mic, Send, Bot } from 'lucide-react';
+import { Mic, Send } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { motion } from 'framer-motion';
+import AtlasAvatar from '@/components/AtlasAvatar';
 
 // Loading placeholder for 3D scene
 const SceneLoading = () => (
@@ -112,6 +113,28 @@ export default function Home() {
           </div>
         </Suspense>
 
+        {/* Rosa Parks — Cinematic Animated Character Hero
+            Place image at /public/images/rosa-parks-hero.jpg to activate.
+            Falls back gracefully (invisible layer) if image is absent. */}
+        <div
+          className="absolute inset-0 z-2 pointer-events-none bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/images/rosa-parks-hero.jpg')",
+            backgroundPosition: 'center 20%',
+            opacity: 0.28,
+            animation: 'hero-breathe 7s ease-in-out infinite',
+            filter: 'sepia(0.2) contrast(1.15) brightness(0.75)',
+          }}
+        />
+        {/* Cinematic portrait glow — red/amber halo behind the character */}
+        <div
+          className="absolute inset-0 z-3 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 55% 80% at 35% 50%, rgba(220,38,38,0.12) 0%, transparent 65%), radial-gradient(ellipse 40% 60% at 35% 60%, rgba(251,191,36,0.07) 0%, transparent 55%)',
+            animation: 'hero-glow-pulse 5s ease-in-out infinite',
+          }}
+        />
+
         {/* Cinematic animated gradient overlay */}
         <motion.div
           className="absolute inset-0 z-5"
@@ -172,7 +195,7 @@ export default function Home() {
         {/* Content Layer */}
         <div className="relative z-30 max-w-3xl">
           <div className="flex items-center gap-3 mb-4">
-            <Bot className="text-indigo-400 w-8 h-8 filter drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
+            <AtlasAvatar size={36} />
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">
               Meet your City Copilot.
             </h2>
@@ -199,7 +222,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(217, 119, 6, 0.6)' }}
                 whileTap={{ scale: 0.95 }}
-                className="group relative px-8 py-3 rounded-full font-bold text-white overflow-hidden"
+                className="group relative px-8 py-3 rounded-full font-bold text-white overflow-hidden button-glow"
               >
                 {/* Animated gradient background */}
                 <motion.div
@@ -302,7 +325,7 @@ export default function Home() {
                 onClick={handleAsk}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0 border border-indigo-400/50"
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0 border border-indigo-400/50 button-glow"
               >
                 <Send size={24} />
               </motion.button>

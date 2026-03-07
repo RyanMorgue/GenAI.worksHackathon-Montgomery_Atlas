@@ -163,9 +163,70 @@ const CinematicLighting = () => (
 const Ground = () => (
   <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.5, -8]}>
     <planeGeometry args={[60, 60]} />
-    <meshStandardMaterial color="#0f172a" metalness={0.2} roughness={0.9} />
+    <meshStandardMaterial color="#070d1a" metalness={0.3} roughness={0.85} />
   </mesh>
 );
+
+// ─── Pre-computed road data (module-level — SSR safe, no Math.random in hooks) ─
+const ROAD_LINES_H: Array<[number, number, number, number, number]> = [
+  [0, -2.46, -8,   60, 0.14],
+  [0, -2.46, -3,   60, 0.10],
+  [0, -2.46, -13,  60, 0.10],
+];
+const ROAD_LINES_V: Array<[number, number, number, number, number]> = [
+  [-6, -2.46, -8, 0.14, 50],
+  [ 6, -2.46, -8, 0.14, 50],
+  [ 0, -2.46, -8, 0.10, 50],
+];
+const INTERSECTION_NODES: Array<[number, number, number]> = [
+  [-6, -2.44, -3], [6, -2.44, -3],
+  [-6, -2.44, -13], [6, -2.44, -13],
+  [ 0, -2.44, -8],
+];
+
+// ─── 3D Montgomery City Map Grid ───────────────────────────────────────────────
+const CityMapGrid = () => {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.08) * 0.05;
+  });
+
+  return (
+    <group ref={groupRef}>
+      {/* Base city block grid */}
+      <gridHelper args={[55, 22, '#1e3a5f', '#0d1a2e']} position={[0, -2.5, -8]} />
+
+      {/* Horizontal glowing road lines */}
+      {ROAD_LINES_H.map(([x, y, z, sx, sz], i) => (
+        <mesh key={`rh-${i}`} position={[x, y, z]} scale={[sx, 1, sz]}>
+          <boxGeometry args={[1, 0.01, 1]} />
+          <meshStandardMaterial color="#1e3a6e" emissive="#3b82f6" emissiveIntensity={0.5} metalness={0.6} roughness={0.2} />
+        </mesh>
+      ))}
+
+      {/* Vertical glowing road lines */}
+      {ROAD_LINES_V.map(([x, y, z, sx, sz], i) => (
+        <mesh key={`rv-${i}`} position={[x, y, z]} scale={[sx, 1, sz]}>
+          <boxGeometry args={[1, 0.01, 1]} />
+          <meshStandardMaterial color="#1e3a6e" emissive="#60a5fa" emissiveIntensity={0.35} metalness={0.5} roughness={0.3} />
+        </mesh>
+      ))}
+
+      {/* Intersection glow nodes */}
+      {INTERSECTION_NODES.map(([x, y, z], i) => (
+        <mesh key={`node-${i}`} position={[x, y, z]}>
+          <cylinderGeometry args={[0.18, 0.18, 0.02, 8]} />
+          <meshStandardMaterial color="#1e3a6e" emissive="#93c5fd" emissiveIntensity={1.4} metalness={0.8} roughness={0.1} />
+        </mesh>
+      ))}
+
+      {/* Map area ambient light */}
+      <pointLight position={[0, 1, -8]} intensity={0.5} color="#1d4ed8" distance={22} decay={2} />
+    </group>
+  );
+};
 
 // ─── Main exported component ──────────────────────────────────────────────────
 const MontgomeryScene = () => (
@@ -182,6 +243,7 @@ const MontgomeryScene = () => (
     <Stars radius={200} depth={80} count={2500} factor={6} saturation={0.4} fade speed={0.4} />
 
     <Ground />
+    <CityMapGrid />
     <AmbientParticles />
 
     {/* Key landmarks */}
