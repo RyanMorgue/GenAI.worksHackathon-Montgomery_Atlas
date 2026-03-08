@@ -35,10 +35,14 @@ export function warnMissingEnvVars(keys?: string[]): void {
     : ENV_CHECKS;
 
   for (const check of checks) {
-    if (!process.env[check.key]) {
+    // Accept GOOGLE_API_KEY as an alias for GEMINI_API_KEY
+    const alias = check.key === 'GEMINI_API_KEY' ? 'GOOGLE_API_KEY' : undefined;
+    const present = !!process.env[check.key] || (alias ? !!process.env[alias] : false);
+    if (!present) {
       const level = check.required ? 'ERROR' : 'WARN';
+      const keyLabel = alias ? `${check.key} (or ${alias})` : check.key;
       console.warn(
-        `[ENV ${level}] Missing ${check.key} — ${check.description}`
+        `[ENV ${level}] Missing ${keyLabel} — ${check.description}`
       );
     }
   }

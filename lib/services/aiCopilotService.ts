@@ -22,7 +22,7 @@ export interface DayItinerary {
 
 export class AICopilotService {
     constructor() {
-        console.log('[AICopilot] GEMINI_API_KEY present:', !!process.env.GEMINI_API_KEY);
+        console.log('[AICopilot] GEMINI_API_KEY present:', !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY));
         console.log('[AICopilot] Client initialized:', isAvailable());
     }
 

@@ -9,12 +9,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // This means adding/changing GEMINI_API_KEY in .env.local takes effect on
 // the next request without requiring a server restart.
 function getClient(): GoogleGenerativeAI | null {
-    const apiKey = process.env.GEMINI_API_KEY || '';
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
     return apiKey ? new GoogleGenerativeAI(apiKey) : null;
 }
 
 export function isAvailable(): boolean {
-    return !!process.env.GEMINI_API_KEY;
+    return !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
 }
 
 /**
