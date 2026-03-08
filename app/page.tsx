@@ -9,6 +9,7 @@ import { Mic, Send } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { motion } from 'framer-motion';
 import AtlasAvatar from '@/components/AtlasAvatar';
+import SafetyIntelligence from '@/components/SafetyIntelligence';
 
 // Loading placeholder for 3D scene
 const SceneLoading = () => (
@@ -82,21 +83,31 @@ export default function Home() {
     }
   };
 
-  const handleAsk = async () => {
-    if (!query.trim()) return;
+  const handleAsk = async (promptOverride?: string) => {
+    const prompt = (promptOverride ?? query).trim();
+    if (!prompt) return;
 
-    setChatLog(prev => [...prev, { role: 'user', text: query }]);
-    const currentQuery = query;
-    setQuery('');
+    setChatLog(prev => [...prev, { role: 'user', text: prompt }]);
+    if (!promptOverride) setQuery('');
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: currentQuery }),
+        body: JSON.stringify({ prompt }),
       });
       const data = await response.json();
-      const text = data.text ?? data.error ?? 'No response from AI.';
+
+      // Build the display text — for itineraries, append the formatted stops
+      let text = data.text ?? data.error ?? 'No response from AI.';
+      if (data.type === 'itinerary' && Array.isArray(data.itinerary?.stops) && data.itinerary.stops.length > 0) {
+        const stopsText = data.itinerary.stops
+          .map((s: { timeBlock: string; location: { name: string }; description: string }) =>
+            `${s.timeBlock}\n${s.location.name} — ${s.description}`)
+          .join('\n\n');
+        text = `${text}\n\n${stopsText}`;
+      }
+
       setChatLog(prev => [...prev, { role: 'copilot', text }]);
     } catch (error) {
       console.error('Chat error:', error);
@@ -223,7 +234,7 @@ export default function Home() {
           </div>
           <p className="text-zinc-300 text-lg md:text-xl mb-8 font-medium drop-shadow-md">
             Ask me anything about Montgomery. Try typing: <br />
-            <button onClick={() => setQuery("Plan my perfect day in Montgomery")} className="inline-block mt-3 bg-white/5 hover:bg-white/10 transition-colors px-4 py-2 rounded-lg border border-white/10 italic font-mono text-sm rgb-hover-glow cursor-pointer text-indigo-200">
+            <button onClick={() => handleAsk("Plan my perfect day in Montgomery")} className="inline-block mt-3 bg-white/5 hover:bg-white/10 transition-colors px-4 py-2 rounded-lg border border-white/10 italic font-mono text-sm rgb-hover-glow cursor-pointer text-indigo-200">
               &quot;Plan my perfect day in Montgomery&quot;
             </button>
           </p>
@@ -339,7 +350,7 @@ export default function Home() {
               </div>
 
               <motion.button
-                onClick={handleAsk}
+                onClick={() => handleAsk()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-4 rounded-full transition-all shadow-[0_0_20px_rgba(79,70,229,0.5)] hover:shadow-[0_0_30px_rgba(79,70,229,0.8)] flex-shrink-0 border border-indigo-400/50 button-glow"
@@ -354,6 +365,11 @@ export default function Home() {
       {/* Finance Directly Below Copilot */}
       <div id="finance" className="animate-in slide-in-from-bottom-8 duration-1000 delay-100">
         <FinanceDashboard />
+      </div>
+
+      {/* Safety Intelligence */}
+      <div id="safety" className="animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+        <SafetyIntelligence />
       </div>
 
       {/* Primary Discovery Grid */}
