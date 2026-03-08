@@ -6,6 +6,22 @@ import { Store, Coffee, ShoppingBag, Scissors, HandMetal, Sparkles, Dumbbell, Ac
 
 type Category = 'restaurants' | 'cafes' | 'malls' | 'salons' | 'manicure salons' | 'spas' | 'gyms' | 'yoga studios' | 'pilates studios';
 
+// Realistic restaurant names replacing generic placeholders
+const RESTAURANT_NAMES = [
+    'Riverfront Grill',
+    'Central Montgomery Bistro',
+    'Capitol City Café',
+    'Alabama Kitchen',
+    'Southern Table',
+    'Riverwalk BBQ',
+    'Magnolia Diner',
+    'Heritage Southern Kitchen',
+    'Dexter Avenue Grille',
+    'Cotton Exchange Bistro',
+    'Dreamland Smokehouse',
+    "Rosa's Kitchen",
+];
+
 // Generate 10+ items per category — called inside useState to avoid SSR/client hydration mismatch
 const generatePOIs = () => {
     const categories: Category[] = ['restaurants', 'cafes', 'malls', 'salons', 'manicure salons', 'spas', 'gyms', 'yoga studios', 'pilates studios'];
@@ -19,9 +35,13 @@ const generatePOIs = () => {
             const id = `poi-${catIdx}-${i}`;
             const isClosed = i % 3 === 0;
 
+            const displayName = cat === 'restaurants'
+                ? RESTAURANT_NAMES[i - 1]
+                : `${cat.split(' ')[0].charAt(0).toUpperCase() + cat.split(' ')[0].slice(1)} Hub ${i}`;
+
             pois.push({
                 id,
-                name: `${cat.split(' ')[0].charAt(0).toUpperCase() + cat.split(' ')[0].slice(1)} Hub ${i}`,
+                name: displayName,
                 type: cat,
                 lat: baseLat + (Math.random() - 0.5) * 0.05,
                 lng: baseLng + (Math.random() - 0.5) * 0.05,

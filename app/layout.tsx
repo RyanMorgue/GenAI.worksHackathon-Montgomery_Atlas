@@ -3,6 +3,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X, Navigation, Briefcase, ShieldAlert, BookOpen, HeartPulse, HardHat, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
 import CityNavMenu from '@/components/CityNavMenu';
@@ -34,9 +35,9 @@ export default function RootLayout({
 
             {/* Desktop Quick Nav */}
             <nav className="hidden lg:flex items-center gap-2">
-              <Link href="/transit" className="text-sm font-medium text-zinc-400 px-4 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Transit Hub</Link>
-              <Link href="/jobs" className="text-sm font-medium text-zinc-400 px-4 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Job Board</Link>
-              <Link href="/crime" className="text-sm font-medium text-zinc-400 px-4 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-all">Live Safety</Link>
+              <NavLink href="/transit">Transit Hub</NavLink>
+              <NavLink href="/jobs">Job Board</NavLink>
+              <NavLink href="/crime">Live Safety</NavLink>
             </nav>
 
             {/* Hamburger Menu Toggle - Desktop */}
@@ -83,6 +84,27 @@ export default function RootLayout({
         </footer>
       </body>
     </html>
+  );
+}
+
+// Active nav link with red RGB glow on the active route
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+  return (
+    <Link
+      href={href}
+      className={`text-sm font-medium px-4 py-2 rounded-lg border transition-all duration-300 ${
+        isActive
+          ? 'text-white border-red-500/60 bg-red-500/5'
+          : 'text-zinc-400 border-transparent hover:text-white hover:bg-white/5'
+      }`}
+      style={isActive ? {
+        boxShadow: '0 0 8px rgba(255, 0, 0, 0.6), 0 0 16px rgba(255, 0, 0, 0.4)',
+      } : undefined}
+    >
+      {children}
+    </Link>
   );
 }
 
