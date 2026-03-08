@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Shield,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -28,6 +29,15 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  {
+    id: 'dashboard',
+    label: 'ATLAS Command Center',
+    href: '/dashboard',
+    icon: <Shield size={24} />,
+    color: 'from-indigo-500 to-violet-500',
+    description: 'Live intelligence map, incident simulator & safety ops',
+    accentGradient: 'bg-gradient-to-r from-indigo-500/20 to-violet-500/20',
+  },
   {
     id: 'transit',
     label: 'Montgomery Transit Hub',
