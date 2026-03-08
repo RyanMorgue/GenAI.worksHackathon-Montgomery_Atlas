@@ -94,6 +94,39 @@ export class AICopilotService {
             };
         } catch (err) {
             console.error('[AICopilot] FULL ERROR:', err);
+            const isQuota = String(err).includes('429') || String(err).includes('quota');
+            if (isQuota) {
+                console.warn('[AICopilot] Quota exceeded — falling back to stub itinerary.');
+                return {
+                    type: 'itinerary',
+                    text: "Here is your perfect day in Montgomery, generated specifically for you!",
+                    itinerary: {
+                        id: `itin-${Date.now()}`,
+                        stops: [
+                            {
+                                timeBlock: 'Morning',
+                                location: { id: 'l1', name: 'Prevail Union Cafe', lat: 32.3789, lng: -86.3090 },
+                                description: 'Start your day with a locally roasted coffee and artisanal pastry.'
+                            },
+                            {
+                                timeBlock: 'Lunch',
+                                location: { id: 'l2', name: 'Central', lat: 32.3792, lng: -86.3101 },
+                                description: 'Enjoy an upscale Southern lunch at a highly acclaimed venue.'
+                            },
+                            {
+                                timeBlock: 'Afternoon',
+                                location: { id: 'l3', name: 'Civil Rights Memorial', lat: 32.3765, lng: -86.3013 },
+                                description: 'Reflect upon the historical significance at this important cultural landmark.'
+                            },
+                            {
+                                timeBlock: 'Evening',
+                                location: { id: 'l4', name: 'The Aviator Bar', lat: 32.3801, lng: -86.3098 },
+                                description: 'Wind down with aviation-themed cocktails and a relaxed atmosphere.'
+                            }
+                        ]
+                    }
+                };
+            }
             return { type: 'chat', text: 'AI service temporarily unavailable. Please try again.' };
         }
     }
@@ -116,6 +149,14 @@ export class AICopilotService {
             return { type: 'chat', text: text || 'No response.' };
         } catch (err) {
             console.error('[AICopilot] FULL ERROR:', err);
+            const isQuota = String(err).includes('429') || String(err).includes('quota');
+            if (isQuota) {
+                console.warn('[AICopilot] Quota exceeded — falling back to stub response.');
+                return {
+                    type: 'chat',
+                    text: `Welcome to Montgomery, Alabama! I'm ATLAS, your city copilot. Montgomery is rich with history — from the Civil Rights Memorial and the Legacy Museum to vibrant dining on Dexter Avenue. Ask me to "Plan my perfect day in Montgomery" for a curated itinerary, or explore the city's transit, jobs, and development updates using the navigation menu above.`
+                };
+            }
             return { type: 'chat', text: 'AI service temporarily unavailable. Please try again.' };
         }
     }

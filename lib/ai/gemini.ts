@@ -27,7 +27,7 @@ export async function generateText(
     const client = getClient();
     if (!client) throw new Error('Gemini client not initialized');
     const model = client.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash',
         systemInstruction,
     });
     const result = await model.generateContent(userPrompt);
@@ -45,7 +45,7 @@ export async function generateJSON(
     const client = getClient();
     if (!client) throw new Error('Gemini client not initialized');
     const model = client.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash',
         systemInstruction,
         generationConfig: { responseMimeType: 'application/json' },
     });
