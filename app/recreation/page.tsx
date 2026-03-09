@@ -29,9 +29,9 @@ export default function RecreationPage() {
                         <p className="text-zinc-400 text-sm flex items-center gap-2 mb-6"><MapPin size={14} /> Montgomery City Center</p>
                         <div className="flex items-center justify-between border-t border-white/10 pt-4">
                             <span className="text-sm font-mono text-zinc-300">{evt.date}</span>
-                            <button className="flex items-center gap-2 text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors font-bold group-hover:bg-fuchsia-500/10 px-3 py-2 rounded-lg">
+                            <a href={evt.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-fuchsia-400 hover:text-fuchsia-300 transition-colors font-bold group-hover:bg-fuchsia-500/10 px-3 py-2 rounded-lg">
                                 <Ticket size={16} /> Get Tickets
-                            </button>
+                            </a>
                         </div>
                     </article>
                 ))}

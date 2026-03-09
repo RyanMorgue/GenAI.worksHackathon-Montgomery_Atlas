@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Navigation, Briefcase, ShieldAlert, BookOpen, HeartPulse, HardHat, CalendarDays } from 'lucide-react';
+import { Menu, X, Navigation, Briefcase, ShieldAlert, BookOpen, HeartPulse, HardHat, CalendarDays, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import CityNavMenu from '@/components/CityNavMenu';
 
@@ -61,6 +61,7 @@ export default function RootLayout({
           <div className="flex-1 overflow-y-auto max-w-4xl mx-auto w-full px-6 py-24">
             <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-8 border-b border-zinc-800 pb-4">Modules Network</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <MenuCard href="/dashboard" icon={<LayoutDashboard />} title="ATLAS Command Center" desc="Live intelligence map, incident simulator & safety ops" onClick={() => setIsMenuOpen(false)} />
               <MenuCard href="/transit" icon={<Navigation />} title="Montgomery Transit Hub" desc="Live bus, train, and taxi routing" onClick={() => setIsMenuOpen(false)} />
               <MenuCard href="/jobs" icon={<Briefcase />} title="Montgomery Job Board" desc="Local job listings & remote work" onClick={() => setIsMenuOpen(false)} />
               <MenuCard href="/crime" icon={<ShieldAlert />} title="Live Crime & Safety Reports" desc="Interactive safety dashboard" onClick={() => setIsMenuOpen(false)} />
