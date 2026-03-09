@@ -16,7 +16,6 @@ import {
   X,
   Shield,
   Activity,
-  Zap,
   Radio,
   MessageSquare,
   LayoutDashboard,

@@ -197,7 +197,7 @@ export default function HistoryPage() {
                             <Maximize2 size={20} />
                         </button>
                     </div>
-                    <p className="text-zinc-400 mb-6">Experience 7 pivotal moments in Montgomery's history through immersive cinematic scenes.</p>
+                    <p className="text-zinc-400 mb-6">Experience 7 pivotal moments in Montgomery&apos;s history through immersive cinematic scenes.</p>
 
                     {/* Story Player Embedded */}
                     <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40">
